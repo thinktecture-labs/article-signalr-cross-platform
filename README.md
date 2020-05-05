@@ -1,1 +1,1 @@
-# article-signalr-demo
+# Cross-platform SignalR demo
