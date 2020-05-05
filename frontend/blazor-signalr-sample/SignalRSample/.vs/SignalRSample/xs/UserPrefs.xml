@@ -1,0 +1,42 @@
+﻿<Properties StartupConfiguration="{5D45B29F-112B-4DF0-A712-40B018589C29}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="SignalRSample.Client/Pages/Index.razor">
+    <Files>
+      <File FileName="SignalRSample.Client/Pages/Index.razor" Line="43" Column="19" />
+      <File FileName="SignalRSample.Client/Startup.cs" />
+      <File FileName="SignalRSample.Client/Pages/_Host.cshtml" />
+      <File FileName="SignalRSample.Client/_Imports.razor" />
+      <File FileName="SignalRSample.Client/Program.cs" />
+      <File FileName="SignalRSample.Client/App.razor" />
+      <File FileName="SignalRSample.Client/Shared/MainLayout.razor" />
+      <File FileName="SignalRSample.Client/wwwroot/css/site.css" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="SignalRSample" expanded="True">
+            <Node name="SignalRSample.Web" expanded="True">
+              <Node name="Pages" expanded="True">
+                <Node name="Index.razor" selected="True" />
+              </Node>
+              <Node name="Shared" expanded="True" />
+              <Node name="wwwroot" expanded="True">
+                <Node name="css" expanded="True" />
+                <Node name="js" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <DisabledProjects>
+    <String>SignalRSample.Client/SignalRSample.Client.csproj</String>
+  </DisabledProjects>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.SignalRSample.Web PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

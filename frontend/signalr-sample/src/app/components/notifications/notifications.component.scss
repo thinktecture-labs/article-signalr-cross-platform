@@ -1,0 +1,25 @@
+:host {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 350px;
+  padding: 12px;
+  z-index: -1;
+  &.open {
+    z-index: 110;
+  }
+}
+
+div {
+  box-sizing: border-box;
+  overflow: visible;
+  transition: margin .3s linear;
+  perspective: 60px;
+  position: relative;
+
+
+  &:not(:first-child) {
+    margin-top: 15px;
+  }
+}

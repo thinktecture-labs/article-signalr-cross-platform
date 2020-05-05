@@ -1,0 +1,33 @@
+<div>
+  <div class="clearfix">
+    <sr-cell
+      *ngFor="let cell of cells | slice: 0: 3; let i = index"
+      [value]="cell"
+      (userClick)=clickHandler(i)
+      [class.middle]="i === 1"
+      [class.other]="cell !== turn"></sr-cell>
+    <br>
+  </div>
+  <div class="clearfix">
+    <sr-cell
+      *ngFor="let cell of cells | slice: 3: 6; let i = index"
+      [value]="cell"
+      (userClick)=clickHandler(i+3)
+      [class.middle]="i === 1"
+      [class.other]="cell !== turn"></sr-cell>
+    <br>
+  </div>
+  <div class="clearfix">
+    <sr-cell
+      *ngFor="let cell of cells | slice: 6; let i = index"
+      [value]="cell"
+      (userClick)=clickHandler(i+6)
+      [class.middle]="i === 1"
+      [class.other]="cell !== turn"></sr-cell>
+    <br>
+  </div>
+</div>
+<div class="overlay" *ngIf="winner">
+  <div>{{winner}}</div>
+  <button mat-raised-button *ngIf="gameOver" (click)="resetGame()">Reset Game</button>
+</div>

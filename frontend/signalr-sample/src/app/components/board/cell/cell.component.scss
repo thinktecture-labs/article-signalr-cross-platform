@@ -1,0 +1,27 @@
+:host {
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  &.middle {
+    div {
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+    }
+  }
+  &.other {
+    div {
+      color: #ff584f;
+    }
+  }
+}
+div {
+  height: 62px;
+  width: 62px;
+  background-color: white;
+  float: left;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 62px;
+}

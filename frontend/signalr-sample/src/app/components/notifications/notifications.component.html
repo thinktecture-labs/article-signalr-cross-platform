@@ -1,0 +1,8 @@
+<div *ngFor="let item of toastService.items$ | async" @verticalCollapse @triggerChildAnimation>
+  <sr-notification-item
+    [toast]="item"
+    @slideIn
+    @slideOut
+  >
+  </sr-notification-item>
+</div>
