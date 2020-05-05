@@ -84,7 +84,7 @@ namespace PushSample.IdentityServer
                 new Client
                 {
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientId = "blazorcontacts-web",
+                    ClientId = "blazor-web",
                     ClientSecrets =
                     {
                         new Secret("thisismyclientspecificsecret".Sha256())

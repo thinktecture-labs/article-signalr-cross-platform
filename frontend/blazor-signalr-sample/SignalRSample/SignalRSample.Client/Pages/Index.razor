@@ -58,7 +58,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await ConnectToHub();
+        if (!IsConnected)
+        {
+            await ConnectToHub();
+        }
         InitBoard();
     }
 

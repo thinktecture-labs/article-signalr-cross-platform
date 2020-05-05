@@ -1,22 +1,25 @@
 ﻿<Properties StartupConfiguration="{5D45B29F-112B-4DF0-A712-40B018589C29}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="SignalRSample.Client/Pages/Index.razor">
+  <MonoDevelop.Ide.Workbench ActiveDocument="SignalRSample.Client/Services/ApiService.cs">
     <Files>
-      <File FileName="SignalRSample.Client/Pages/Index.razor" Line="43" Column="19" />
-      <File FileName="SignalRSample.Client/Startup.cs" />
+      <File FileName="SignalRSample.Client/Pages/Index.razor" Line="70" Column="52" />
+      <File FileName="SignalRSample.Client/Startup.cs" Line="1" Column="1" />
       <File FileName="SignalRSample.Client/Pages/_Host.cshtml" />
       <File FileName="SignalRSample.Client/_Imports.razor" />
-      <File FileName="SignalRSample.Client/Program.cs" />
+      <File FileName="SignalRSample.Client/Program.cs" Line="1" Column="1" />
       <File FileName="SignalRSample.Client/App.razor" />
       <File FileName="SignalRSample.Client/Shared/MainLayout.razor" />
       <File FileName="SignalRSample.Client/wwwroot/css/site.css" />
+      <File FileName="SignalRSample.Client/appsettings.json" Line="1" Column="1" />
+      <File FileName="SignalRSample.Client/Services/ApiService.cs" Line="37" Column="39" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="SignalRSample" expanded="True">
             <Node name="SignalRSample.Web" expanded="True">
-              <Node name="Pages" expanded="True">
-                <Node name="Index.razor" selected="True" />
+              <Node name="Pages" expanded="True" />
+              <Node name="Services" expanded="True">
+                <Node name="ApiService.cs" selected="True" />
               </Node>
               <Node name="Shared" expanded="True" />
               <Node name="wwwroot" expanded="True">

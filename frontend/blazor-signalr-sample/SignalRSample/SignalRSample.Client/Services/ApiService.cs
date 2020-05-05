@@ -35,7 +35,7 @@ namespace SignalRSample.Web.Services
                     Scope = "push-api.full_access",
                     ClientSecret = "thisismyclientspecificsecret",
                     Address = discovery.TokenEndpoint,
-                    ClientId = "blazorcontacts-web"
+                    ClientId = "blazor-web"
                 });
 
                 if (tokenResponse.IsError)
@@ -54,30 +54,6 @@ namespace SignalRSample.Web.Services
         public Task<string> GetAccessToken()
         {
             return requestNewToken();
-        }
-
-        public async Task<List<Contact>> GetContactsAsync()
-        {
-            var access_token = await requestNewToken();
-            _httpClient.SetBearerToken(access_token);
-
-            var response = await _httpClient.GetAsync("http://localhost:5002/api/contacts");
-            response.EnsureSuccessStatusCode();
-
-            using var responseContent = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<List<Contact>>(responseContent);
-        }
-
-        public async Task<Contact> GetContactByIdAsync(int id)
-        {
-            var access_token = await requestNewToken();
-            _httpClient.SetBearerToken(access_token);
-
-            var response = await _httpClient.GetAsync($"http://localhost:5002/api/contacts/{id}");
-            response.EnsureSuccessStatusCode();
-
-            using var responseContent = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<Contact>(responseContent);
         }
     }
 }
