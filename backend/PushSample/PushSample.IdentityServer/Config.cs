@@ -66,7 +66,11 @@ namespace PushSample.IdentityServer
                     RequireConsent = false,
                     ClientId = "push-spa",
                     ClientName = "Angular Push SPA",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedGrantTypes = GrantTypes.Code,
+                    ClientSecrets =
+                    {
+                        new Secret("pwasecret".Sha256())
+                    },
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

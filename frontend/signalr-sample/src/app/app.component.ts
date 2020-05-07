@@ -17,7 +17,7 @@ export class AppComponent {
               private oauthService: OAuthService,
               public signalRService: SignalRService) {
     // Remember the selected configuration
-    this.configureImplicitFlow();
+    this.configureCodeFlow();
 
     // Automatically load user profile
     this.oauthService.events
@@ -28,7 +28,7 @@ export class AppComponent {
       });
   }
 
-  private configureImplicitFlow() {
+  private configureCodeFlow() {
     this.oauthService.configure(authConfig);
     // this.oauthService.setStorage(localStorage);
     this.oauthService.tokenValidationHandler = new JwksValidationHandler();
