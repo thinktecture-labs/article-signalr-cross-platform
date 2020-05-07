@@ -1,0 +1,12 @@
+﻿@page "/"
+@inject Sotsera.Blazor.Oidc.IUserManager UserManager
+@using BlazorSignalRSample.Client.Services
+@inject SignalRService _signalRService
+
+<TicTacToe></TicTacToe>
+
+@code {
+    
+    private List<string> users = new List<string>();
+
+}

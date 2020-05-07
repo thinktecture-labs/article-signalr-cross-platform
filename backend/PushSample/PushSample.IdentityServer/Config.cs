@@ -83,8 +83,32 @@ namespace PushSample.IdentityServer
                 },
                 new Client
                 {
+                    RequireConsent = false,
+                    ClientId = "blazor-spa",
+                    ClientName = "Blazor SPA",
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "push-api.full_access",
+                        "custom.profile"
+                    },
+                    RedirectUris = {"https://localhost:6001/oidc/callbacks/authentication-redirect"},
+                    PostLogoutRedirectUris = {"https://localhost:6001/"},
+                    AllowedCorsOrigins = {"https://localhost:6001"},
+                    AllowAccessTokensViaBrowser = true,
+                    AccessTokenLifetime = 3600
+                },
+                new Client
+                {
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientId = "blazor-web",
+                    ClientId = "blazor-server",
                     ClientSecrets =
                     {
                         new Secret("thisismyclientspecificsecret".Sha256())

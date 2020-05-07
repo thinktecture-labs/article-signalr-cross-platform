@@ -1,0 +1,157 @@
+@inject BlazorSignalRSample.Client.Services.SignalRService _signalRService
+
+<div class="container">
+    @if (cells.Length > 0)
+    {
+        <div>
+            <div class="clearfix">
+                <div class="cell" @onclick="@(async (e) => await PlayRound(0))">@(cells[0])</div>
+                <div class="cell middle" @onclick="@(async (e) => await PlayRound(1))">@(cells[1])</div>
+                <div class="cell" @onclick="@(async (e) => await PlayRound(2))">@(cells[2])</div>
+                <br>
+            </div>
+            <div class="clearfix">
+                <div class="cell" @onclick="@(async (e) => await PlayRound(3))">@(cells[3])</div>
+                <div class="cell middle" @onclick="@(async (e) => await PlayRound(4))">@(cells[4])</div>
+                <div class="cell" @onclick="@(async (e) => await PlayRound(5))">@(cells[5])</div>
+                <br>
+            </div>
+            <div class="clearfix">
+                <div class="cell" @onclick="@(async (e) => await PlayRound(6))">@(cells[6])</div>
+                <div class="cell middle" @onclick="@(async (e) => await PlayRound(7))">@(cells[7])</div>
+                <div class="cell" @onclick="@(async (e) => await PlayRound(8))">@(cells[8])</div>
+                <br>
+            </div>
+        </div>
+    }
+</div>
+
+@if (gameover)
+{
+    <div class="overlay">
+        <div>
+            winner is {{winner}}
+        </div>
+        <Button Color="Color.Primary" @onclick="ResetGame">Reset Game</Button>
+    </div>
+}
+
+@code {
+    private string[] cells = new string[] { };
+    private bool gameover = false;
+    private string turn = "O";
+    private bool WaitForOther = false;
+    private string winner = "";
+
+    private List<string> users = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _signalRService.RoundPlayed += OtherPlayRound;
+        _signalRService.ResetGame += OnResetGame;
+
+        if (!_signalRService.IsConnected)
+        {
+            await _signalRService.InitConnectionAsync();
+        }
+        InitBoard();
+    }
+
+    public async Task ResetGame()
+    {
+        await _signalRService.ResetGameAsync();
+        InitBoard();
+    }
+
+    private void InitBoard()
+    {
+        var result = new List<string>();
+        for (var i = 0; i < 9; i++)
+        {
+            result.Insert(i, null);
+        }
+        cells = result.ToArray();
+        turn = "O";
+        gameover = false;
+        winner = null;
+    }
+
+    private void OnResetGame(object sender, EventArgs data)
+    {
+        InitBoard();
+    }
+
+    private void OtherPlayRound(object sender, Services.GameEventArgs data)
+    {
+        if (!gameover)
+        {
+            if (cells[data.Value] == null)
+            {
+                this.cells[data.Value] = "X";
+                CheckWinner();
+                if (!this.gameover)
+                {
+                    WaitForOther = false;
+                }
+            }
+        }
+
+    }
+
+    private async Task PlayRound(int data)
+    {
+        if (!gameover && !WaitForOther)
+        {
+            if (cells[data] == null)
+            {
+                this.cells[data] = turn;
+                await _signalRService.PlayRoundAsync(data);
+                CheckWinner();
+                if (!this.gameover)
+                {
+                    WaitForOther = true;
+                }
+            }
+        }
+
+    }
+
+    private void CheckWinner()
+    {
+        int[][] winningOptions =
+        {
+            new int[] {0,1,2},
+            new int[] {3,4,5},
+            new int[] {6,7,8},
+            new int[] {0,3,6},
+            new int[] {1,4,7},
+            new int[] {2,5,8},
+            new int[] {0,4,8},
+            new int[] {2,4,6},
+        };
+
+
+        foreach (var line in winningOptions)
+        {
+            if (cells[line[0]] == cells[line[1]] && cells[line[1]] == cells[line[2]] && cells[line[0]] != null)
+            {
+                gameover = true;
+                winner = cells[line[0]] == turn ? "You Win!" : "You loose!";
+                return;
+            }
+        }
+
+        var occupy = 0;
+        foreach (var cell in cells)
+        {
+            occupy = occupy + (cell != null ? 1 : 0);
+        }
+        if (occupy == 9)
+        {
+            gameover = true;
+            winner = "TIE";
+        }
+    }
+
+    
+}

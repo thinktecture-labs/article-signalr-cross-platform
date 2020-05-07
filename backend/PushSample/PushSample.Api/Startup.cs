@@ -40,8 +40,7 @@ namespace PushSample.Api
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials()
-                            .WithOrigins("http://localhost:4200", "http://localhost:4201", "http://localhost:4202",
-                                "http://localhost:4203", "http://127.0.0.1:4200", "http://127.0.0.1:4201");
+                            .WithOrigins("http://localhost:4200", "https://localhost:6001");
                     });
             });
 

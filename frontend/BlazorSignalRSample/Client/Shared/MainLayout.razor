@@ -1,0 +1,27 @@
+﻿@inherits LayoutComponentBase
+@inject Sotsera.Blazor.Oidc.IUserManager UserManager
+
+<Layout>
+    <LayoutHeader Fixed="true">
+        <Bar Breakpoint="Breakpoint.Desktop" Background="Background.Primary" Theme="Theme.Primary">
+            <BarBrand>
+                SignalR Sample Tic Tac Toe
+            </BarBrand>
+            <BarToggler>
+            </BarToggler>
+            <BarMenu>
+                <BarItem>
+                    <Login />
+                </BarItem>
+            </BarMenu>
+        </Bar>
+    </LayoutHeader>
+    <LayoutContent>        
+        <div class="container">
+            @if (!String.IsNullOrWhiteSpace(UserManager?.UserState?.AccessToken))
+            {
+                @Body                
+            }
+        </div>
+    </LayoutContent>
+</Layout>

@@ -7,7 +7,7 @@ using PushSample.Api.Services;
 
 namespace PushSample.Api.Hubs
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize]
     public class NotificationHub : Hub
     {
         private readonly UsersService _usersService;

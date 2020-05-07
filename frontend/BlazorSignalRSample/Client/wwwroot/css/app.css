@@ -1,0 +1,101 @@
+﻿html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+    overflow: hidden;
+}
+
+nav {
+    background-color: #ff584f;
+    padding: 0 8px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.clearfix:first-child {
+    border: none;
+}
+
+.clearfix {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+    .clearfix:last-child {
+        border: none;
+    }
+
+.cell {
+    height: 62px;
+    width: 62px;
+    background-color: white;
+    float: left;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 62px;
+}
+
+    .cell.middle {
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+    }
+
+.overlay {
+    position: absolute;
+    top: 64px;
+    z-index: 10;
+    -webkit-backdrop-filter: blur(4px) grayscale(30%);
+    backdrop-filter: blur(4px) grayscale(30%);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.connected-state {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+}
+
+    .connected-state i {
+        font-size: 32px;
+        color: white;
+    }
+
+    .connected-state.disabled {
+        opacity: .6;
+    }
+
+.b-layout {
+    height: 100%;
+}
+
+.bg-primary {
+    background-color: #ff584f !important;
+    color: white;
+}
+
+@media (min-width: 768px) {
+    .navbar-expand-md .navbar-collapse {
+        justify-content: flex-end;
+    }
+}
