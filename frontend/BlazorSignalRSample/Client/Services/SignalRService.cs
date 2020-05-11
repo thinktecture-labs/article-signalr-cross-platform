@@ -28,15 +28,18 @@ namespace BlazorSignalRSample.Client.Services
                 .WithUrl($"http://localhost:5002/notifications?access_token={accessToken}")
                 .Build();
 
+
+            await _hubConnection.StartAsync();
+
             _hubConnection.On<string>("UserConnected", (data) =>
             {
                 UserConnected?.Invoke(this, new UserEventArgs() { UserName = data });
             });
 
-            _hubConnection.On<string>("Play", (data) =>
+            _hubConnection.On<object>("Play", (data) =>
             {
-                var value = Int32.Parse(data);
-                RoundPlayed?.Invoke(this, new GameEventArgs() { Value = value });
+                Console.WriteLine("Round Played", data);
+                // RoundPlayed?.Invoke(this, new GameEventArgs() { Value = data });
             });
 
             _hubConnection.On("Reset", () =>
@@ -44,12 +47,12 @@ namespace BlazorSignalRSample.Client.Services
                 ResetGame?.Invoke(this, null);
             });
             
-            await _hubConnection.StartAsync();
         }
 
         public async Task PlayRoundAsync(int value) 
         {
-            await _hubConnection.SendAsync("Play", value);
+            Console.WriteLine("Send play round", value);
+            await _hubConnection.InvokeAsync("PlayRound", $"{value}");
         }
 
         public async Task ResetGameAsync() 

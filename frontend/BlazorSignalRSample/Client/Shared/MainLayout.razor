@@ -5,8 +5,8 @@
     <MatAppBar Fixed="true">
         <MatAppBarRow>
             <MatAppBarSection>
-                <MatIconButton Icon="menu"></MatIconButton>
-                <MatAppBarTitle>SignalR Sample Tic Tac Toe</MatAppBarTitle>
+                <div class="sr-tt-logo">
+                </div>
             </MatAppBarSection>
             <MatAppBarSection Align="@MatAppBarSectionAlign.End">
                 <Login />
@@ -16,8 +16,8 @@
  
     <MatAppBarContent>
         @if (!String.IsNullOrWhiteSpace(UserManager?.UserState?.AccessToken))
-            {
-                @Body                
-            }
+        {
+            @Body                
+        }
     </MatAppBarContent>
 </MatAppBarContainer>

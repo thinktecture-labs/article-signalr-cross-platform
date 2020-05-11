@@ -83,6 +83,7 @@
 
     private void OtherPlayRound(object sender, Services.GameEventArgs data)
     {
+        Console.WriteLine("Other played round", data);
         if (!gameover)
         {
             if (cells[data.Value] == null)
@@ -105,6 +106,7 @@
             if (cells[data] == null)
             {
                 this.cells[data] = turn;
+                Console.WriteLine(data);
                 await _signalRService.PlayRoundAsync(data);
                 CheckWinner();
                 if (!this.gameover)

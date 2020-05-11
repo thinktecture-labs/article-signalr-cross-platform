@@ -70,12 +70,13 @@ export class SignalRService {
 
   public addTransferResetListener = () => {
     this.hubConnection.on('Reset', () => {
-      console.log('User played its your turn');
+      console.log('User reset the game');
       this.resetGame$.next(void 0);
     });
   };
 
   public async sendPlayRound(data: number) {
+    console.log('Send data', data);
     await this.hubConnection.invoke('PlayRound', `${data}`);
   }
 
