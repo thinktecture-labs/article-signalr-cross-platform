@@ -13,6 +13,7 @@ export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public userPlayed$ = new Subject<number>();
   public resetGame$ = new Subject<void>();
+  public userOnline$ = new Subject<void>();
 
   constructor(
     private readonly oAuthService: OAuthService,
@@ -56,7 +57,7 @@ export class SignalRService {
 
   public addTransferUsersListener = () => {
     this.hubConnection.on('UserConnected', (data) => {
-      console.log('User is online to play');
+      this.userOnline$.next(void 0);
     });
   };
 

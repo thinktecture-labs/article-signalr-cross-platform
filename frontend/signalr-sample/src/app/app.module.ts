@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,13 +15,14 @@ import { OAuthModule } from 'angular-oauth2-oidc';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { BoardComponent } from './components/board/board.component';
+import { CellComponent } from './components/board/cell/cell.component';
 import { HomeComponent } from './components/home/home.component';
+import { IconComponent } from './components/icon/icon.component';
 import { LoginComponent } from './components/login/login.component';
 import { NotificationItemComponent } from './components/notifications/notification-item/notification-item.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
-import { BoardComponent } from './components/board/board.component';
-import { CellComponent } from './components/board/cell/cell.component';
-import { IconComponent } from './components/icon/icon.component';
+import { TokenInterceptor } from './interceptors/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,13 @@ import { IconComponent } from './components/icon/icon.component';
     MatIconModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {

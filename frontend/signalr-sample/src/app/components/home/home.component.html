@@ -1,1 +1,4 @@
-<sr-board></sr-board>
+<sr-board *ngIf="(usersService.userOnline$ | async); else waiting"></sr-board>
+<ng-template #waiting>
+  <div>Waiting for user....</div>
+</ng-template>

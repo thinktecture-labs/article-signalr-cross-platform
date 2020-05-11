@@ -2,6 +2,8 @@
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     height: 100%;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 nav {
@@ -13,7 +15,7 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: calc(100vh - 64px);
     width: 100%;
     flex-direction: column;
 }

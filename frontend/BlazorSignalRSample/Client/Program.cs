@@ -1,7 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Blazorise.Material;
-using Blazorise.Icons.Material;
 
 namespace BlazorSignalRSample.Client
 {
@@ -17,10 +15,6 @@ namespace BlazorSignalRSample.Client
             Startup.PopulateServices(builder.Services);
 
             var host = builder.Build();
-            host.Services
-                  .UseMaterialProviders()
-                  .UseMaterialIcons();
-
             await host.RunAsync();
         }
     }

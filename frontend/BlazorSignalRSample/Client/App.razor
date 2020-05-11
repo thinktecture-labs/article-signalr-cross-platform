@@ -2,22 +2,33 @@
 
 @inject IUserManager UserManager
 
-<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(IUserManager).Assembly }">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-            <NotAuthorized>
-                <p>You're not authorized to reach this page.</p>
-            </NotAuthorized>
-            <Authorizing>
-                <h3>Authentication in progress...</h3>
-            </Authorizing>
-        </AuthorizeRouteView>
-    </Found>
-    <NotFound>
-        <CascadingAuthenticationState>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p>Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </CascadingAuthenticationState>
-    </NotFound>
-</Router>
+<MatThemeProvider Theme="@theme">
+    <Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(IUserManager).Assembly }">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <p>You're not authorized to reach this page.</p>
+                </NotAuthorized>
+                <Authorizing>
+                    <h3>Authentication in progress...</h3>
+                </Authorizing>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <CascadingAuthenticationState>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p>Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            </CascadingAuthenticationState>
+        </NotFound>
+    </Router>
+</MatThemeProvider>
+
+@code
+{
+    MatTheme theme = new MatTheme()
+    {
+        Primary = MatThemeColors.Orange._500.Value,
+        Secondary = MatThemeColors.BlueGrey._500.Value
+    };
+}
