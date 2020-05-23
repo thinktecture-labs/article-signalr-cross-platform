@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HubConnectionState } from '@aspnet/signalr';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { SignalRService } from '../../services/signal-r.service';
 import { UsersService } from '../../services/users.service';
 
@@ -11,20 +10,15 @@ import { UsersService } from '../../services/users.service';
 })
 export class HomeComponent implements OnInit {
 
-  public userOnline$: Subject<boolean>;
+  public users$: BehaviorSubject<any[]>;
 
 
   constructor(private readonly signalRService: SignalRService, public readonly usersService: UsersService) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.signalRService.startConnection();
-    this.userOnline$ = this.usersService.userOnline$;
-    this.usersService.start();
-    /*setTimeout(() => {
-      if (this.signalRService.state === HubConnectionState.Connected) {
-        this.usersService.start();
-      }
-    }, 5000);*/
+    this.users$ = this.usersService.users$;
+    await this.usersService.start();
   }
 
 }

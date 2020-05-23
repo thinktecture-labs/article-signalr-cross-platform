@@ -4,6 +4,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Toast } from '../models/toast';
+import { User } from '../models/user';
 import { NotificationService } from './notification.service';
 
 @Injectable({
@@ -13,7 +14,9 @@ export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public userPlayed$ = new Subject<number>();
   public resetGame$ = new Subject<void>();
-  public userOnline$ = new Subject<void>();
+  public userOnline$ = new Subject<User>();
+  public userOffline$ = new Subject<User>();
+  public ownUser$ = new Subject<User>();
 
   constructor(
     private readonly oAuthService: OAuthService,
@@ -25,7 +28,7 @@ export class SignalRService {
     return this.hubConnection?.state;
   }
 
-  public startConnection = () => {
+  public startConnection = async () => {
     const token = this.oAuthService.getAccessToken();
     if (!token) {
       return;
@@ -35,22 +38,26 @@ export class SignalRService {
         accessTokenFactory: () => token
       })
       .build();
+    await this.hubConnection.start();
+    await this.notify('Erfolgreich am Hub angemeldet!').catch(err => console.log(err));
+    const user = await this.hubConnection.invoke('OwnConnectionId');
+    this.ownUser$.next(user);
 
-    this.hubConnection
-      .start()
-      .then(() => {
-        this.notify('Erfolgreich am Hub angemeldet!').catch(err => console.log(err));
-      })
-      .catch(err => console.log('Error while starting connection: ' + err));
-
+    this.addTransferUserConnectedListener();
+    this.addTransferUserDisconnectedListener();
     this.addTransferPlayroundListener();
-    this.addTransferUsersListener();
     this.addTransferResetListener();
   };
 
-  public addTransferUsersListener = () => {
+  public addTransferUserConnectedListener = () => {
     this.hubConnection.on('UserConnected', (data) => {
-      this.userOnline$.next(void 0);
+      this.userOnline$.next(data);
+    });
+  };
+
+  public addTransferUserDisconnectedListener = () => {
+    this.hubConnection.on('UserDisconnected', (data) => {
+      this.userOffline$.next(data);
     });
   };
 
