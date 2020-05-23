@@ -12,14 +12,15 @@ namespace BlazorSignalRSample.Client
         {
             services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5001") });
             services.AddScoped<SignalRService>();
+            services.AddScoped<UserService>();
 
             services.AddOidc(new Uri("http://localhost:5000"), (settings, siteUri) =>
             {
                 settings.UseDefaultCallbackUris(siteUri);
                 settings.ClientId = "blazor-spa";
-                settings.ClientSecret = "secret";
+                settings.ClientSecret = "blazor-spa-secret";
                 settings.ResponseType = "code";
-                settings.Scope = "openid profile push-api.full_access";
+                settings.Scope = "openid profile signalr-api.full_access";
             });
         }
     }

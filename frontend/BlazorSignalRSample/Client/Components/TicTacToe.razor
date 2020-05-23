@@ -1,28 +1,31 @@
 @inject BlazorSignalRSample.Client.Services.SignalRService _signalRService
+@inject BlazorSignalRSample.Client.Services.UserService _userService
 
 <div class="container">
     @if (cells.Length > 0)
     {
-        <div>
-            <div class="clearfix">
-                <div class="cell" @onclick="@(async (e) => await PlayRound(0))">@(cells[0])</div>
-                <div class="cell middle" @onclick="@(async (e) => await PlayRound(1))">@(cells[1])</div>
-                <div class="cell" @onclick="@(async (e) => await PlayRound(2))">@(cells[2])</div>
-                <br>
+        @if (UserAvailable) 
+        {
+            <div>
+                <div class="clearfix">
+                    <div class="@CellCssClass(cells[0])" @onclick="@(async (e) => await PlayRound(0))">@(cells[0])</div>
+                    <div class="@CellCssClass(cells[1])" @onclick="@(async (e) => await PlayRound(1))">@(cells[1])</div>
+                    <div class="@CellCssClass(cells[2])" @onclick="@(async (e) => await PlayRound(2))">@(cells[2])</div>
+                </div>
+                <div class="clearfix">
+                    <div class="@CellCssClass(cells[3])" @onclick="@(async (e) => await PlayRound(3))">@(cells[3])</div>
+                    <div class="@CellCssClass(cells[4])" @onclick="@(async (e) => await PlayRound(4))">@(cells[4])</div>
+                    <div class="@CellCssClass(cells[5])" @onclick="@(async (e) => await PlayRound(5))">@(cells[5])</div>
+                </div>
+                <div class="clearfix">
+                    <div class="@CellCssClass(cells[6])" @onclick="@(async (e) => await PlayRound(6))">@(cells[6])</div>
+                    <div class="@CellCssClass(cells[7])" @onclick="@(async (e) => await PlayRound(7))">@(cells[7])</div>
+                    <div class="@CellCssClass(cells[8])" @onclick="@(async (e) => await PlayRound(8))">@(cells[8])</div>
+                </div>
             </div>
-            <div class="clearfix">
-                <div class="cell" @onclick="@(async (e) => await PlayRound(3))">@(cells[3])</div>
-                <div class="cell middle" @onclick="@(async (e) => await PlayRound(4))">@(cells[4])</div>
-                <div class="cell" @onclick="@(async (e) => await PlayRound(5))">@(cells[5])</div>
-                <br>
-            </div>
-            <div class="clearfix">
-                <div class="cell" @onclick="@(async (e) => await PlayRound(6))">@(cells[6])</div>
-                <div class="cell middle" @onclick="@(async (e) => await PlayRound(7))">@(cells[7])</div>
-                <div class="cell" @onclick="@(async (e) => await PlayRound(8))">@(cells[8])</div>
-                <br>
-            </div>
-        </div>
+        } else {
+            <p>Waiting for a user</p>
+        }
     }
 </div>
 
@@ -30,9 +33,9 @@
 {
     <div class="overlay">
         <div>
-            winner is {{winner}}
+            winner is @(Winner)
         </div>
-        <Button Color="Color.Primary" @onclick="ResetGame">Reset Game</Button>
+        <MatButton Raised="true" @onclick="ResetGame">Reset Game</MatButton>
     </div>
 }
 
@@ -41,7 +44,8 @@
     private bool gameover = false;
     private string turn = "O";
     private bool WaitForOther = false;
-    private string winner = "";
+    private string Winner = "";
+    private bool UserAvailable = false;
 
     private List<string> users = new List<string>();
 
@@ -49,12 +53,19 @@
     {
         _signalRService.RoundPlayed += OtherPlayRound;
         _signalRService.ResetGame += OnResetGame;
+        _userService.UserConnected += OnUserConnected;
 
         if (!_signalRService.IsConnected)
         {
             await _signalRService.InitConnectionAsync();
         }
+        UserAvailable = await _userService.HasUsers();
         InitBoard();
+    }
+
+    public string CellCssClass(string value) {
+        Console.WriteLine(value);
+        return value != turn ? "cell other" : "cell";
     }
 
     public async Task ResetGame()
@@ -73,12 +84,19 @@
         cells = result.ToArray();
         turn = "O";
         gameover = false;
-        winner = null;
+        Winner = null;
+    }
+
+    private void OnUserConnected(object sender, EventArgs data) 
+    {
+        UserAvailable = true;
+        StateHasChanged();
     }
 
     private void OnResetGame(object sender, EventArgs data)
     {
         InitBoard();
+        StateHasChanged();
     }
 
     private void OtherPlayRound(object sender, Services.GameEventArgs data)
@@ -96,7 +114,7 @@
                 }
             }
         }
-
+        StateHasChanged();
     }
 
     private async Task PlayRound(int data)
@@ -115,7 +133,7 @@
                 }
             }
         }
-
+        StateHasChanged();
     }
 
     private void CheckWinner()
@@ -138,7 +156,7 @@
             if (cells[line[0]] == cells[line[1]] && cells[line[1]] == cells[line[2]] && cells[line[0]] != null)
             {
                 gameover = true;
-                winner = cells[line[0]] == turn ? "You Win!" : "You loose!";
+                Winner = cells[line[0]] == turn ? "You Win!" : "You loose!";
                 return;
             }
         }
@@ -151,7 +169,7 @@
         if (occupy == 9)
         {
             gameover = true;
-            winner = "TIE";
+            Winner = "TIE";
         }
     }
 
