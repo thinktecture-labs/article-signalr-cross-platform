@@ -10,7 +10,7 @@ import { NotificationService } from './notification.service';
 @Injectable({
   providedIn: 'root',
 })
-export class SignalRService {
+export class SignalrService {
   private hubConnection: signalR.HubConnection;
   public userPlayed$ = new Subject<number>();
   public resetGame$ = new Subject<void>();

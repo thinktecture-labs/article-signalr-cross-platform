@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { SignalRService } from '../../services/signal-r.service';
+import { SignalrService } from '../../services/signalr.service';
 import { UsersService } from '../../services/users.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
   public users$: BehaviorSubject<any[]>;
 
 
-  constructor(private readonly signalRService: SignalRService, public readonly usersService: UsersService) { }
+  constructor(private readonly signalRService: SignalrService, public readonly usersService: UsersService) { }
 
   async ngOnInit(): Promise<void> {
     this.signalRService.startConnection();

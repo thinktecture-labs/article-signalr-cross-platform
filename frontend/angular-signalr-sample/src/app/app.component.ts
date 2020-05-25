@@ -4,7 +4,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
 import { filter } from 'rxjs/operators';
 import { authConfig } from './auth.config';
-import { SignalRService } from './services/signal-r.service';
+import { SignalrService } from './services/signalr.service';
 
 @Component({
   selector: 'sr-root',
@@ -15,7 +15,7 @@ export class AppComponent {
 
   constructor(private router: Router,
               private oauthService: OAuthService,
-              public signalRService: SignalRService) {
+              public signalRService: SignalrService) {
     // Remember the selected configuration
     this.configureCodeFlow();
 

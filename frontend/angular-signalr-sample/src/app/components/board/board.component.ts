@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { SignalRService } from '../../services/signal-r.service';
+import { SignalrService } from '../../services/signalr.service';
 
 @Component({
   selector: 'sr-board',
@@ -16,7 +16,7 @@ export class BoardComponent implements OnInit {
   @HostBinding('class.disabled')
   public waitForOther: boolean;
 
-  constructor(private readonly signalRService: SignalRService) {
+  constructor(private readonly signalRService: SignalrService) {
   }
 
   ngOnInit() {
