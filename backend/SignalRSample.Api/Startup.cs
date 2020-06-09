@@ -38,14 +38,15 @@ namespace SignalRSample.Api
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials()
-                            .WithOrigins("http://localhost:4200", "https://localhost:6001");
+                            .WithOrigins("http://localhost:4200", "https://localhost:6001", "tictactoe://localhost");
                     });
             });
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "http://localhost:5000";
+                    options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
+                    // options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
                     options.Audience = "signalr-api";
                     options.Events = new JwtBearerEvents
@@ -54,12 +55,10 @@ namespace SignalRSample.Api
                         {
                             var accessToken = context.Request.Query["access_token"];
 
-                            // If the request is for our hub...
                             var path = context.HttpContext.Request.Path;
                             if (!string.IsNullOrEmpty(accessToken) &&
                                 (path.StartsWithSegments("/tictactoe")))
                             {
-                                // Read the token out of the query string
                                 context.Token = accessToken;
                             }
 
@@ -74,7 +73,8 @@ namespace SignalRSample.Api
                 })
                 .AddIdentityServerAuthentication("token", options =>
                 {
-                    options.Authority = "http://localhost:5000";
+                    options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
+                    // options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
 
                     options.ApiName = "signalr-api";

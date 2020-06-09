@@ -12,9 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using SignalRSample.IdentityServer.Data;
 using SignalRSample.IdentityServer.Models;
-using Serilog;
 
 namespace SignalRSample.IdentityServer
 {
@@ -31,6 +31,17 @@ namespace SignalRSample.IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.AllowAnyOrigin() //TODO add in specific origins?
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             services.AddControllersWithViews();
 
             // configures IIS out-of-proc settings (see https://github.com/aspnet/AspNetCore/issues/14882)
@@ -79,6 +90,17 @@ namespace SignalRSample.IdentityServer
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
+            /*if (Environment.IsDevelopment())
+            {
+                builder.AddDeveloperSigningCredential();
+            }
+            else
+            {
+                // TODO: save in configuration
+                builder.AddSigningCredential(
+                    new X509Certificate2(Path.Combine("IdentityServerCert.pfx"),
+                        "signalr"));
+            }*/
 
             services.AddAuthentication();
         }
@@ -96,6 +118,7 @@ namespace SignalRSample.IdentityServer
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseCors("default");
             app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });

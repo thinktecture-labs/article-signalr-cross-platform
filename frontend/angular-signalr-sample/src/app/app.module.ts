@@ -12,11 +12,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { OAuthModule } from 'angular-oauth2-oidc';
+import { DeviceDetectorModule } from 'ngx-device-detector';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BoardComponent } from './components/board/board.component';
 import { CellComponent } from './components/board/cell/cell.component';
+import { CallbackComponent } from './components/callback/callback.component';
 import { HomeComponent } from './components/home/home.component';
 import { IconComponent } from './components/icon/icon.component';
 import { LoginComponent } from './components/login/login.component';
@@ -33,7 +35,8 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     NotificationsComponent,
     BoardComponent,
     CellComponent,
-    IconComponent
+    IconComponent,
+    CallbackComponent
   ],
   imports: [
     BrowserModule,
@@ -55,6 +58,7 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     MatSidenavModule,
     MatListModule,
     MatIconModule,
+    DeviceDetectorModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [

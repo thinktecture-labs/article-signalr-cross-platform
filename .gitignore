@@ -5,3 +5,7 @@ obj
 .idea
 .vs
 tempkey.rsa
+android
+ios
+publish
+PublishProfiles

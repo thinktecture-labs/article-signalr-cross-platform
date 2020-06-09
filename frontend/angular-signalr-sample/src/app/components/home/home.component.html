@@ -2,7 +2,7 @@
   <p>{{user.name}}: {{user.connectionId}}</p>
 </div>
 <div class="container">
-  <sr-board *ngIf="(users$ | async).length > 0; else waiting"></sr-board>
+  <sr-board *ngIf="(users$ | async)?.length > 0; else waiting"></sr-board>
   <ng-template #waiting>
     <div>Waiting for user....</div>
   </ng-template>

@@ -31,7 +31,11 @@ namespace BlazorSignalRSample.Client.Services
             }
             var accessToken = _manager.UserState.AccessToken;
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl($"http://localhost:5002/tictactoe?access_token={accessToken}")
+                .WithUrl($"http://localhost:5002/tictactoe?access_token={accessToken}", options =>
+                { 
+                    options.AccessTokenProvider = () => Task.FromResult(accessToken);
+                })
+                .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10) })
                 .Build();
 
             _hubConnection.On<User>("UserConnected", (data) =>

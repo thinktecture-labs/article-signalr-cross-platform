@@ -4,32 +4,19 @@ import { environment } from '../environments/environment';
 export const authConfig: AuthConfig = {
   // Url of the Identity Provider
   issuer: environment.identityBaseUrl,
-
-  // URL of the SPA to redirect the user to after login
-  // redirectUri: window.location.origin
-  //   + ((localStorage.getItem('useHashLocationStrategy') === 'true')
-  //     ? '/#/index.html'
-  //     : '/index.html'),
-
-  redirectUri: window.location.origin + '/login',
-
+  redirectUri: window.location.origin + '/callback',
   // URL of the SPA to redirect the user after silent refresh
   silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html',
-
   // The SPA's id. The SPA is registerd with this id at the auth-server
-  clientId: 'angular-spa',
+  clientId: 'crossapp',
   responseType: 'code',
-  dummyClientSecret: 'angular-spa-secret',
-
+  dummyClientSecret: 'crossapp-secret',
   // set the scope for the permissions the client should request
   // The first three are defined by OIDC. The 4th is a usecase-specific one
-  scope: 'openid profile signalr-api.full_access',
-
-  // silentRefreshShowIFrame: true,
-
+  scope: 'openid profile signalr-api.full_access offline_access',
   showDebugInformation: true,
-
-  sessionChecksEnabled: true,
-
-  // timeoutFactor: 0.01,
+  requireHttps: false,
+  useSilentRefresh: false,
+  timeoutFactor: 0.01,
+  clearHashAfterLogin: false
 };

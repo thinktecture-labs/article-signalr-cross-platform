@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as signalR from '@aspnet/signalr';
+import * as signalR from '@microsoft/signalr';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -33,10 +33,12 @@ export class SignalrService {
     if (!token) {
       return;
     }
+    console.log(token);
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.apiBaseUrl}tictactoe`, {
         accessTokenFactory: () => token
       })
+      .withAutomaticReconnect([0, 5000, 10000])
       .build();
     await this.hubConnection.start();
     await this.notify('Erfolgreich am Hub angemeldet!').catch(err => console.log(err));

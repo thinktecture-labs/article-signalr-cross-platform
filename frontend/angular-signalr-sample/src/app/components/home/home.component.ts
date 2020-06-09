@@ -16,9 +16,7 @@ export class HomeComponent implements OnInit {
   constructor(private readonly signalRService: SignalrService, public readonly usersService: UsersService) { }
 
   async ngOnInit(): Promise<void> {
-    this.signalRService.startConnection();
+    await this.signalRService.startConnection();
     this.users$ = this.usersService.users$;
-    await this.usersService.start();
   }
-
 }

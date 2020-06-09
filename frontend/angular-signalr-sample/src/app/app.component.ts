@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { HubConnectionState } from '@microsoft/signalr';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
+import { DeviceDetectorService } from 'ngx-device-detector';
 import { filter } from 'rxjs/operators';
 import { authConfig } from './auth.config';
 import { SignalrService } from './services/signalr.service';
@@ -11,46 +11,33 @@ import { SignalrService } from './services/signalr.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  public connectionState: HubConnectionState = this.signalRService.state;
+  public isMobileDevice: boolean;
+  public isTabletDevice: boolean;
 
-  constructor(private router: Router,
-              private oauthService: OAuthService,
-              public signalRService: SignalrService) {
-    // Remember the selected configuration
+  constructor(
+    private readonly oauthService: OAuthService,
+    private readonly signalRService: SignalrService,
+    private readonly deviceService: DeviceDetectorService
+  ) {
     this.configureCodeFlow();
+  }
 
-    // Automatically load user profile
+  ngOnInit(): void {
+    this.isMobileDevice = this.deviceService.isMobile();
+    this.isTabletDevice = this.deviceService.isTablet();
     this.oauthService.events
       .pipe(filter(e => e.type === 'token_received'))
       .subscribe(_ => {
-        console.log('state', this.oauthService.state);
-        this.oauthService.loadUserProfile();
+        this.oauthService.loadUserProfile().catch(err => console.log(err));
       });
   }
 
   private configureCodeFlow() {
+    if (authConfig.redirectUri === 'tictactoe:///callback') {
+      authConfig.redirectUri = 'tictactoe://localhost/callback';
+    }
     this.oauthService.configure(authConfig);
-    // this.oauthService.setStorage(localStorage);
-    this.oauthService.tokenValidationHandler = new JwksValidationHandler();
-
-    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(_ => {
-      this.router.navigate(['/']);
-    });
-
-    // Optional
-    this.oauthService.setupAutomaticSilentRefresh();
-
-    // Display all events
-    this.oauthService.events.subscribe(e => {
-      // tslint:disable-next-line:no-console
-      console.debug('oauth/oidc event', e);
-    });
-
-    this.oauthService.events
-      .pipe(filter(e => e.type === 'session_terminated'))
-      .subscribe(e => {
-        // tslint:disable-next-line:no-console
-        console.debug('Your session has been terminated!');
-      });
   }
 }

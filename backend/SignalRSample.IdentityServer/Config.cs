@@ -83,6 +83,43 @@ namespace SignalRSample.IdentityServer
                 new Client
                 {
                     RequireConsent = false,
+                    ClientId = "crossapp",
+                    ClientName = "Cross Plattform Sample",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowOfflineAccess = true,
+                    ClientSecrets =
+                    {
+                        new Secret("crossapp-secret".Sha256())
+                    },
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "signalr-api.full_access",
+                        "custom.profile"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+                        "tictactoe://localhost/home",
+                        "http://localhost:4200/home"
+                    },
+                    RedirectUris =
+                    {
+                        "tictactoe://localhost/callback",
+                        "http://localhost:4200/callback"
+                    },
+                    AllowedCorsOrigins =
+                    {
+                        "tictactoe://localhost",
+                        "http://localhost:4200"
+                    },
+                    AllowAccessTokensViaBrowser = true,
+                    AccessTokenLifetime = 3600
+                },
+                new Client
+                {
+                    RequireConsent = false,
                     ClientId = "blazor-spa",
                     ClientName = "Blazor SPA",
                     ClientSecrets =

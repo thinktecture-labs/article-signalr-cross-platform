@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
         <RootNamespace>SignalRSample.IdentityServer</RootNamespace>
     </PropertyGroup>
 
@@ -26,16 +26,23 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Assets\star-wars-tablet-wallpaper.jpg" />
+        <None Remove="Assets\star-wars-tablet-wallpaper.jpg" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Assets" />
-      <Folder Include="wwwroot\images" />
+        <Folder Include="Assets" />
+        <Folder Include="wwwroot\images" />
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Views\Register\Register.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Register\Register.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="IdentityServerCert.pfx" />
+      <Content Include="IdentityServerCert.pfx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

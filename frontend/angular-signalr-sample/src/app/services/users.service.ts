@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { User } from '../models/user';
 import { SignalrService } from './signalr.service';
@@ -11,7 +11,7 @@ import { SignalrService } from './signalr.service';
   providedIn: 'root',
 })
 export class UsersService {
-  private users: User[];
+  private users: User[] = [];
   public users$ = new BehaviorSubject<User[]>([]);
 
   constructor(
@@ -19,14 +19,16 @@ export class UsersService {
     private readonly oAuthService: OAuthService,
     private readonly httpClient: HttpClient,
   ) {
+    this.inti();
   }
 
-  public async start() {
+  public inti() {
     combineLatest([this.httpClient.get<User[]>(`${environment.apiBaseUrl}users`), this.signalRService.ownUser$])
-      .pipe(map(([users, ownUser]) => {
-        return users.filter(u => u.connectionId !== ownUser.connectionId);
-      })).subscribe(users => {
-        this.users = users;
+      .pipe(
+        map(([users, ownUser]) => users.filter(u => u.connectionId !== ownUser.connectionId)),
+        tap(users => console.log(users))
+      ).subscribe(users => {
+        this.users = users ?? [];
         this.users$.next(this.users);
     });
     this.signalRService.userOnline$.subscribe((user: User) => {
