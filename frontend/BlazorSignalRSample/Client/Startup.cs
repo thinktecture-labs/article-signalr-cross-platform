@@ -2,7 +2,10 @@
 using System.Net.Http;
 using BlazorSignalRSample.Client.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Sotsera.Blazor.Oidc;
+using Sotsera.Blazor.Oidc.Configuration.Model;
+using MatBlazor;
 
 namespace BlazorSignalRSample.Client
 {
@@ -10,17 +13,31 @@ namespace BlazorSignalRSample.Client
     {
         public static void PopulateServices(IServiceCollection services)
         {
-            services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5001") });
+            services.AddTransient<HttpClient>();
             services.AddScoped<SignalRService>();
             services.AddScoped<UserService>();
 
-            services.AddOidc(new Uri("http://localhost:5000"), (settings, siteUri) =>
+            services.AddMatToaster(config =>
+            {
+                config.Position = MatToastPosition.TopRight;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = true;
+                config.ShowCloseButton = true;
+                config.MaximumOpacity = 95;
+                config.VisibleStateDuration = 3000;
+            });
+           
+            services.AddOidc(new Uri("https://pj-tt-idsrv.azurewebsites.net"), (settings, siteUri) =>
             {
                 settings.UseDefaultCallbackUris(siteUri);
                 settings.ClientId = "blazor-spa";
-                settings.ClientSecret = "blazor-spa-secret";
                 settings.ResponseType = "code";
                 settings.Scope = "openid profile signalr-api.full_access";
+                settings.ClientSecret = "blazor-spa-secret";
+
+                settings.MinimumLogeLevel = LogLevel.Information;
+                settings.StorageType = StorageType.SessionStorage;
+                settings.InteractionType = InteractionType.Popup;
             });
         }
     }

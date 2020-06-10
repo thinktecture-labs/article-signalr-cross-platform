@@ -3,7 +3,7 @@
 <AuthorizeView>
     <Authorized>
         <span class="login-display-name mr-3">
-            @UserManager.User.Name
+            @UserManager.User.Name, @UserManager.UserState.ExpiresAt
         </span>
         <MatIconButton Icon="exit_to_app" OnClick="@LogoutRedirect"></MatIconButton>
     </Authorized>
@@ -13,10 +13,9 @@
 
     protected async override Task OnInitializedAsync() 
     {
-        await Task.Delay(500);
         if (String.IsNullOrWhiteSpace(UserManager.UserState?.AccessToken)) 
         {
-            await UserManager.BeginAuthenticationAsync(p => p.WithRedirect());
+            await UserManager.BeginAuthenticationAsync();
         }
 
     }

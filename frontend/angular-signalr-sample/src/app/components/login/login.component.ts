@@ -13,7 +13,7 @@ export class LoginComponent {
     private oauthService: OAuthService) {
   }
 
-  public async loginCode(): Promise<void> {
+  public async login(): Promise<void> {
     // Tweak config for code flow
     await this.oauthService.loadDiscoveryDocument();
     sessionStorage.setItem('flow', 'code');

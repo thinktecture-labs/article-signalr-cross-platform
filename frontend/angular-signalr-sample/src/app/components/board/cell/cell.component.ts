@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'sr-cell',
@@ -10,10 +10,10 @@ export class CellComponent {
   public value: string;
 
   @Output('userClick')
-  public click = new EventEmitter<string>();
+  public click = new EventEmitter<void>();
 
   @HostListener('click')
   clickHandler() {
-    this.click.emit('');
+    this.click.emit(void 0);
   }
 }

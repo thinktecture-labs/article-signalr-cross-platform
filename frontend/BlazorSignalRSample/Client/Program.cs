@@ -9,11 +9,7 @@ namespace BlazorSignalRSample.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
-
-            // builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
             Startup.PopulateServices(builder.Services);
-
             var host = builder.Build();
             await host.RunAsync();
         }

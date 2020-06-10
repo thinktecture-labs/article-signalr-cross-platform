@@ -4,7 +4,6 @@
 
 export const environment = {
   production: false,
-  // identityBaseUrl: 'http://192.168.2.100:5000',
   identityBaseUrl: 'https://pj-tt-idsrv.azurewebsites.net',
   apiBaseUrl: 'https://pj-tt-signalr.azurewebsites.net/'
 };

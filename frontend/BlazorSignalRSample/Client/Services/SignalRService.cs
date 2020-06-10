@@ -2,6 +2,7 @@ using System;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using BlazorSignalRSample.Client.Models;
+using MatBlazor;
 using Microsoft.AspNetCore.SignalR.Client;
 using Sotsera.Blazor.Oidc;
 
@@ -9,7 +10,8 @@ namespace BlazorSignalRSample.Client.Services
 {
     public class SignalRService 
     {
-        private static HubConnection _hubConnection;
+        private HubConnection _hubConnection;
+        private IMatToaster _toaster;
         private IUserManager _manager;
         public EventHandler<GameEventArgs> RoundPlayed;
         public EventHandler ResetGame;
@@ -19,9 +21,10 @@ namespace BlazorSignalRSample.Client.Services
         public bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
         public string ConnectionId => _hubConnection.ConnectionId;
 
-        public SignalRService(IUserManager manager)
+        public SignalRService(IUserManager manager, IMatToaster toaster)
         {
             _manager = manager ?? throw new ArgumentNullException();
+            _toaster = toaster ?? throw new ArgumentNullException();
         }
 
         public async Task InitConnectionAsync()
@@ -31,7 +34,7 @@ namespace BlazorSignalRSample.Client.Services
             }
             var accessToken = _manager.UserState.AccessToken;
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl($"http://localhost:5002/tictactoe?access_token={accessToken}", options =>
+                .WithUrl($"https://pj-tt-signalr.azurewebsites.net/tictactoe?access_token={accessToken}", options =>
                 { 
                     options.AccessTokenProvider = () => Task.FromResult(accessToken);
                 })
@@ -61,6 +64,7 @@ namespace BlazorSignalRSample.Client.Services
             });
 
             await _hubConnection.StartAsync();
+            _toaster.Add("Erfolgreich am Hub angemeldet!", MatToastType.Success);
         }
 
         public async Task PlayRoundAsync(int value) 

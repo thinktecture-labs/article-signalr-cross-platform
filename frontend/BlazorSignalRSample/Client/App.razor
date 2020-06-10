@@ -2,6 +2,9 @@
 
 @inject IUserManager UserManager
 
+<SessionExpiring />
+<MatToastContainer />
+
 <MatThemeProvider Theme="@theme">
     <Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(IUserManager).Assembly }">
         <Found Context="routeData">

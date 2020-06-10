@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { SignalrService } from '../../services/signalr.service';
+import { SignalRService } from '../../services/signal-r.service';
 
 @Component({
   selector: 'sr-board',
@@ -16,10 +16,10 @@ export class BoardComponent implements OnInit {
   @HostBinding('class.disabled')
   public waitForOther: boolean;
 
-  constructor(private readonly signalRService: SignalrService) {
+  constructor(private readonly signalRService: SignalRService) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.init();
     this.signalRService.userPlayed$.subscribe(data => {
         this.otherPlay(data);
@@ -30,12 +30,12 @@ export class BoardComponent implements OnInit {
     });
   }
 
-  async resetGame() {
+  public async resetGame(): Promise<void> {
     await this.signalRService.resetRound();
     this.init();
   }
 
-  init() {
+  private init(): void {
     for (let i = 0; i < 9; i++) {
       this.cells[i] = null;
     }
@@ -43,7 +43,7 @@ export class BoardComponent implements OnInit {
     this.winner = null;
   }
 
-  otherPlay(idx: number) {
+  private otherPlay(idx: number): void {
     if (!this.gameOver) {
       if (this.cells[idx] === null) {
         this.cells[idx] = 'O';
@@ -55,7 +55,7 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  async clickHandler(idx: number) {
+  public async onUserClick(idx: number) {
     if (!this.gameOver && !this.waitForOther) {
       if (this.cells[idx] === null) {
         this.cells[idx] = this.turn;
@@ -68,7 +68,7 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  checkWinner() {
+  private checkWinner() {
     // winning options
     const lines = [
       [0, 1, 2],

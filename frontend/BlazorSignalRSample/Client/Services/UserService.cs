@@ -31,7 +31,7 @@ namespace BlazorSignalRSample.Client.Services
         {
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userManager.UserState.AccessToken);
-            var userString = await httpClient.GetStringAsync("http://localhost:5002/users");
+            var userString = await httpClient.GetStringAsync("https://pj-tt-signalr.azurewebsites.net/users");
             var currentUsers = JsonSerializer.Deserialize<User[]>(userString);
             _users = currentUsers.Where(u => u.connectionId != _signalRService.ConnectionId).ToList();
             Console.WriteLine(JsonSerializer.Serialize(_users));

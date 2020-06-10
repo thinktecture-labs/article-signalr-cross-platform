@@ -10,7 +10,7 @@ import { NotificationService } from './notification.service';
 @Injectable({
   providedIn: 'root',
 })
-export class SignalrService {
+export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public userPlayed$ = new Subject<number>();
   public resetGame$ = new Subject<void>();
@@ -31,9 +31,9 @@ export class SignalrService {
   public startConnection = async () => {
     const token = this.oAuthService.getAccessToken();
     if (!token) {
+      await this.notify('Es konnte keine Verbindung aufgebaut werden, da Sie noch nicht angemeldet sind.');
       return;
     }
-    console.log(token);
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.apiBaseUrl}tictactoe`, {
         accessTokenFactory: () => token
@@ -41,40 +41,15 @@ export class SignalrService {
       .withAutomaticReconnect([0, 5000, 10000])
       .build();
     await this.hubConnection.start();
-    await this.notify('Erfolgreich am Hub angemeldet!').catch(err => console.log(err));
+    await this.notify('Erfolgreich am Hub angemeldet!');
     const user = await this.hubConnection.invoke('OwnConnectionId');
     this.ownUser$.next(user);
 
     this.addTransferUserConnectedListener();
     this.addTransferUserDisconnectedListener();
-    this.addTransferPlayroundListener();
+    this.addTransferPlayRoundListener();
     this.addTransferResetListener();
-  };
-
-  public addTransferUserConnectedListener = () => {
-    this.hubConnection.on('UserConnected', (data) => {
-      this.userOnline$.next(data);
-    });
-  };
-
-  public addTransferUserDisconnectedListener = () => {
-    this.hubConnection.on('UserDisconnected', (data) => {
-      this.userOffline$.next(data);
-    });
-  };
-
-  public addTransferPlayroundListener = () => {
-    this.hubConnection.on('Play', (data) => {
-      console.log('User played its your turn');
-      this.userPlayed$.next(data);
-    });
-  };
-
-  public addTransferResetListener = () => {
-    this.hubConnection.on('Reset', () => {
-      console.log('User reset the game');
-      this.resetGame$.next(void 0);
-    });
+    this.addReconnectListener();
   };
 
   public async sendPlayRound(data: number) {
@@ -86,6 +61,38 @@ export class SignalrService {
     await this.hubConnection.invoke('ResetGame');
   }
 
+  private addReconnectListener = () => {
+    this.hubConnection.onreconnected(_ => {
+      this.notify('Die Verbindung wurde wieder hergestellt').catch(err => console.log(err));
+    })
+  }
+
+  private addTransferUserConnectedListener = () => {
+    this.hubConnection.on('UserConnected', (data) => {
+      this.userOnline$.next(data);
+    });
+  };
+
+  private addTransferUserDisconnectedListener = () => {
+    this.hubConnection.on('UserDisconnected', (data) => {
+      this.userOffline$.next(data);
+    });
+  };
+
+  private addTransferPlayRoundListener = () => {
+    this.hubConnection.on('Play', (data) => {
+      console.log('User played its your turn');
+      this.userPlayed$.next(data);
+    });
+  };
+
+  private addTransferResetListener = () => {
+    this.hubConnection.on('Reset', () => {
+      console.log('User reset the game');
+      this.resetGame$.next(void 0);
+    });
+  };
+
   private async notify(payload) {
     const toast = {
       title: payload,
@@ -93,6 +100,6 @@ export class SignalrService {
     this.notificationService.addNotification(toast);
     setTimeout(() => {
       this.notificationService.removeNotification(toast);
-    }, 2500);
+    }, 1000);
   }
 }

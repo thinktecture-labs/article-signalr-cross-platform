@@ -1,0 +1,44 @@
+@inject Sotsera.Blazor.Oidc.IUserManager UserManager
+
+@if (Shown)
+{
+    <MatDialog @bind-IsOpen="@Shown">
+        <MatDialogTitle>Authentication session is expired</MatDialogTitle>
+        <MatDialogContent>
+            <p>You can perform a popup login and mantain your current work
+                    or update the page to the unauthenticated state</p>             
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@LoginAgain">Login again</MatButton>
+            <MatButton OnClick="@Reload">Logout</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+}
+
+@code {
+    bool Shown { get; set; }
+
+    void LoginAgain() => UserManager.BeginAuthenticationAsync();
+
+    void Reload()
+    {
+        UserManager.BeginLogoutAsync();
+        Shown = false;
+    }
+
+    protected override void OnInitialized()
+    {
+        UserManager.OnUserSessionExpiring += args =>
+        {
+            Shown = true;
+            InvokeAsync(StateHasChanged);
+            args.Cancel = true;
+        };
+
+        UserManager.UserChanged += user =>
+        {
+            if (Shown) Shown = user == null;
+            InvokeAsync(StateHasChanged);
+        };
+    }
+}

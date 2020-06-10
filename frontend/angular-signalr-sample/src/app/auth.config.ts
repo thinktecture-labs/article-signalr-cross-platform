@@ -5,8 +5,6 @@ export const authConfig: AuthConfig = {
   // Url of the Identity Provider
   issuer: environment.identityBaseUrl,
   redirectUri: window.location.origin + '/callback',
-  // URL of the SPA to redirect the user after silent refresh
-  silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html',
   // The SPA's id. The SPA is registerd with this id at the auth-server
   clientId: 'crossapp',
   responseType: 'code',

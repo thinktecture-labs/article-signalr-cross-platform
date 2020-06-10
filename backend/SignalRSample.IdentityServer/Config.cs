@@ -59,30 +59,6 @@ namespace SignalRSample.IdentityServer
                 new Client
                 {
                     RequireConsent = false,
-                    ClientId = "angular-spa",
-                    ClientName = "Angular Push SPA",
-                    AllowedGrantTypes = GrantTypes.Code,
-                    ClientSecrets =
-                    {
-                        new Secret("angular-spa-secret".Sha256())
-                    },
-                    AllowedScopes =
-                    {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.Email,
-                        "signalr-api.full_access",
-                        "custom.profile"
-                    },
-                    RedirectUris = {"http://localhost:4200/login"},
-                    PostLogoutRedirectUris = {"http://localhost:4200/home"},
-                    AllowedCorsOrigins = {"http://localhost:4200"},
-                    AllowAccessTokensViaBrowser = true,
-                    AccessTokenLifetime = 3600
-                },
-                new Client
-                {
-                    RequireConsent = false,
                     ClientId = "crossapp",
                     ClientName = "Cross Plattform Sample",
                     AllowedGrantTypes = GrantTypes.Code,
@@ -122,11 +98,12 @@ namespace SignalRSample.IdentityServer
                     RequireConsent = false,
                     ClientId = "blazor-spa",
                     ClientName = "Blazor SPA",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowOfflineAccess = true,
                     ClientSecrets =
                     {
                         new Secret("blazor-spa-secret".Sha256())
                     },
-                    AllowedGrantTypes = GrantTypes.Code,
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
@@ -135,29 +112,26 @@ namespace SignalRSample.IdentityServer
                         "signalr-api.full_access",
                         "custom.profile"
                     },
-                    RedirectUris = {"https://localhost:6001/oidc/callbacks/authentication-redirect"},
-                    PostLogoutRedirectUris = {"https://localhost:6001/"},
-                    AllowedCorsOrigins = {"https://localhost:6001"},
+                    RedirectUris =
+                    {
+                        "https://localhost:6001/oidc/callbacks/authentication-redirect",
+                        "https://localhost:6001/_content/Sotsera.Blazor.Oidc/authentication-popup.html",
+                        "http://localhost:52310/oidc/callbacks/authentication-redirect",
+                        "http://localhost:52310/_content/Sotsera.Blazor.Oidc/authentication-popup.html"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+                        "https://localhost:6001/",
+                        "http://localhost:52310/"
+                    },
+                    AllowedCorsOrigins =
+                    {
+                        "https://localhost:6001",
+                        "http://localhost:52310"
+                    },
                     AllowAccessTokensViaBrowser = true,
                     AccessTokenLifetime = 3600
-                },
-                new Client
-                {
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientId = "blazor-server",
-                    ClientSecrets =
-                    {
-                        new Secret("blazor-server-secret".Sha256())
-                    },
-                    AllowedScopes =
-                    {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.Email,
-                        "signalr-api.full_access",
-                        "custom.profile"
-                    }
-                },
+                }
             };
     }
 }

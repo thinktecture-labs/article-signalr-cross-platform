@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { User } from '../models/user';
-import { SignalrService } from './signalr.service';
+import { SignalRService } from './signal-r.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ export class UsersService {
   public users$ = new BehaviorSubject<User[]>([]);
 
   constructor(
-    private readonly signalRService: SignalrService,
+    private readonly signalRService: SignalRService,
     private readonly oAuthService: OAuthService,
     private readonly httpClient: HttpClient,
   ) {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { SignalrService } from '../../services/signalr.service';
+import { User } from '../../models/user';
+import { SignalRService } from '../../services/signal-r.service';
 import { UsersService } from '../../services/users.service';
 
 @Component({
@@ -10,10 +11,10 @@ import { UsersService } from '../../services/users.service';
 })
 export class HomeComponent implements OnInit {
 
-  public users$: BehaviorSubject<any[]>;
+  public users$: BehaviorSubject<User[]>;
 
 
-  constructor(private readonly signalRService: SignalrService, public readonly usersService: UsersService) { }
+  constructor(private readonly signalRService: SignalRService, public readonly usersService: UsersService) { }
 
   async ngOnInit(): Promise<void> {
     await this.signalRService.startConnection();

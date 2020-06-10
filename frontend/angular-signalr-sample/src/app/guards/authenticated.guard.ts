@@ -15,30 +15,22 @@ export class AuthenticatedGuard implements CanActivate, CanActivateChild {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.internalCanActivate(state.url);
+    return this.internalCanActivate();
   }
 
   canActivateChild(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.internalCanActivate(state.url);
+    return this.internalCanActivate();
   }
 
-  private internalCanActivate(redirectUri: string): Observable<boolean | UrlTree> {
+  private internalCanActivate(): Observable<boolean | UrlTree> {
     return new Observable<boolean | UrlTree>((observer) => {
-      if (this.givenName) {
+      if (this.oAuthService.getAccessToken()) {
         observer.next(true);
       }
 
       observer.next(this.router.createUrlTree(['/login']));
     });
-  }
-
-  private get givenName() {
-    const claims = this.oAuthService.getIdentityClaims();
-    if (!claims) {
-      return null;
-    }
-    return claims['name'];
   }
 }
