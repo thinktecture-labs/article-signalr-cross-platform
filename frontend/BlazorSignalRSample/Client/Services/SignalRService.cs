@@ -34,6 +34,9 @@ namespace BlazorSignalRSample.Client.Services
             }
             var accessToken = _manager.UserState.AccessToken;
             _hubConnection = new HubConnectionBuilder()
+                // REVIEW: Wäre es generell nicht sinnvoller, solche URLs in eine Config auszulagern? Gleiches gilt auch für den Server, sodass man über eine 
+                // Umgebungsvariable bestimmen kann, wo man den IdSrv findet. 
+                // Falls Du das Ding mal kurzfristig wo anders hosten musst, für eine andere Demo oder ähnliches, musst du nur die Umgebungsvariable ändern und nicht den Code neu bauen.
                 .WithUrl($"https://pj-tt-signalr.azurewebsites.net/tictactoe?access_token={accessToken}", options =>
                 { 
                     options.AccessTokenProvider = () => Task.FromResult(accessToken);
