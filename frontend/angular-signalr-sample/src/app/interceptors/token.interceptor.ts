@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 
+// REVIEW: den brauchst Du eigentlich nicht, da das die OIDC Lib vom Manfred auch kann über Config.
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   constructor(public auth: OAuthService) {}

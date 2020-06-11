@@ -7,6 +7,11 @@ import { Toast } from '../models/toast';
 import { User } from '../models/user';
 import { NotificationService } from './notification.service';
 
+// REVIEW: Macht es Sinn, dem SignalR Service die Spielevents bekannt zu geben?
+// So, wie er benannt ist, ist es eigentlich generisch zum Aufbauen der Verbindung da.
+// Entweder würde ich ihn dann umbenennen oder einen weiteren Service implementieren,
+// der die Spielevents kennt und diese mit dem SignalRService dann verarbeiten kann.
+
 @Injectable({
   providedIn: 'root',
 })
@@ -28,6 +33,7 @@ export class SignalRService {
     return this.hubConnection?.state;
   }
 
+  // REVIEW: Gibt's einen Grund, warum die Funktion hier als Feld definiert ist und nicht als echte Funktion?
   public startConnection = async () => {
     const token = this.oAuthService.getAccessToken();
     if (!token) {
@@ -61,6 +67,7 @@ export class SignalRService {
     await this.hubConnection.invoke('ResetGame');
   }
 
+  // REVIEW: Gibt's einen Grund, warum alle die Funktionen hier nicht als echte Funktion sondern als Felder deklariert sind?
   private addReconnectListener = () => {
     this.hubConnection.onreconnected(_ => {
       this.notify('Die Verbindung wurde wieder hergestellt').catch(err => console.log(err));
@@ -93,6 +100,10 @@ export class SignalRService {
     });
   };
 
+  // REVIEW: Warum muss der SignalR-Service die Toast Notification wieder löschen?
+  // Das ist definitiv die Zuständigkeit vom NotificationService.
+  // Zudem fehlt das Typing für payload.
+  // Und Payload sollte eher title heißen?
   private async notify(payload) {
     const toast = {
       title: payload,

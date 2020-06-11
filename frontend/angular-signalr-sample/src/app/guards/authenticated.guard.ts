@@ -24,13 +24,20 @@ export class AuthenticatedGuard implements CanActivate, CanActivateChild {
     return this.internalCanActivate();
   }
 
-  private internalCanActivate(): Observable<boolean | UrlTree> {
-    return new Observable<boolean | UrlTree>((observer) => {
+  private internalCanActivate(): boolean | UrlTree {
+    if (this.oAuthService.getAccessToken()) {
+      return true;
+    }
+
+    return this.router.createUrlTree(['/login']);
+
+    // REVIEW: Gibt's ein Grund für den Observer hier anstatt es wie oben einfacher zu gestalten?
+    /*return new Observable<boolean | UrlTree>((observer) => {
       if (this.oAuthService.getAccessToken()) {
         observer.next(true);
       }
 
       observer.next(this.router.createUrlTree(['/login']));
-    });
+    });*/
   }
 }
