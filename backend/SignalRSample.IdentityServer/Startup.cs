@@ -96,6 +96,7 @@ namespace SignalRSample.IdentityServer
             }
             else
             {
+              // REVIEW: Brauchst Du das hier überhaupt für eine Demo? Reicht da nicht das DeveloperSigningCredential oben?
                 // TODO: save in configuration
                 builder.AddSigningCredential(
                     new X509Certificate2(Path.Combine("IdentityServerCert.pfx"),
