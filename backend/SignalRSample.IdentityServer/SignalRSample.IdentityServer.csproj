@@ -30,7 +30,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Assets" />
         <Folder Include="wwwroot\images" />
     </ItemGroup>
 
@@ -40,9 +39,6 @@
 
     <ItemGroup>
       <None Remove="IdentityServerCert.pfx" />
-      <Content Include="IdentityServerCert.pfx">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
     </ItemGroup>
 
 </Project>
