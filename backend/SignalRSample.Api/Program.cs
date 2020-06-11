@@ -13,6 +13,7 @@ namespace SignalRSample.Api
     {
         public static void Main(string[] args)
         {
+            // REVIEW: Wenn der Server hier die Spiellogik enthalten wird, wäre sicherlich auch ein Logging praktisch.
             CreateHostBuilder(args).Build().Run();
         }
 

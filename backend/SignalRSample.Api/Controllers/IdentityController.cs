@@ -11,6 +11,7 @@ namespace SignalRSample.Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            // REVIEW: Du nutzt sonst überall die Methodenschreibweise und hier plötzlich "normales" LINQ. Wieso?
             return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
         }
     }

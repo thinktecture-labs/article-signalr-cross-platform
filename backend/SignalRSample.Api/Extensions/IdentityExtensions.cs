@@ -12,6 +12,7 @@ namespace SignalRSample.Api.Extensions
             return userNameClaim != null ? userNameClaim.Value : String.Empty;
         }
         
+        // REVIEW: Wird nicht genutzt?
         public static string UserId(this ClaimsPrincipal user)
         {
             var userIdClaim = user.FindFirst(c => c.Type == "sub");

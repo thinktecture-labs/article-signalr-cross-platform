@@ -13,6 +13,8 @@ namespace SignalRSample.Api.Controllers
 
         public UsersController(UsersService usersService)
         {
+            // REVIEW: Könnte man auch weglassen, da der Controller über DI aktiviert wird und es dann in der DI schon knallt
+            // wenn der UsersService nicht existiert.
             _usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
         }
 
