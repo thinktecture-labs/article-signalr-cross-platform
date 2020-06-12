@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,7 +24,6 @@ import { IconComponent } from './components/icon/icon.component';
 import { LoginComponent } from './components/login/login.component';
 import { NotificationItemComponent } from './components/notifications/notification-item/notification-item.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
-import { TokenInterceptor } from './interceptors/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -60,13 +59,6 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     MatIconModule,
     DeviceDetectorModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true
-    }
   ],
   bootstrap: [AppComponent],
 })

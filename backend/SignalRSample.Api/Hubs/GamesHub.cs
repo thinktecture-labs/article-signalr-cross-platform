@@ -11,13 +11,13 @@ namespace SignalRSample.Api.Hubs
     [Authorize]
     public class GamesHub : Hub
     {
-        private readonly UsersService _usersService;
+        private readonly IUsersService _usersService;
 
-        public GamesHub(UsersService usersService)
+        public GamesHub(IUsersService usersService)
         {
             // REVIEW: Könnte man auch weglassen, da der Hub über DI aktiviert wird und es dann in der DI schon knallt
             // wenn der UsersService nicht existiert.
-            _usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
+            _usersService = usersService;
         }
 
         public async Task SendNotification(string message)
@@ -46,7 +46,7 @@ namespace SignalRSample.Api.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            _usersService.AddUser(Context.ConnectionId, Context.User.UserName());
+            await _usersService.AddUserAsync(Context.ConnectionId, Context.User.UserName());
             await Clients.Others.SendAsync("UserConnected", new User
             {
                 ConnectionId = Context.ConnectionId,
@@ -57,7 +57,7 @@ namespace SignalRSample.Api.Hubs
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            _usersService.RemoveUser(Context.ConnectionId);
+            await _usersService.RemoveUserAsync(Context.ConnectionId);
             await Clients.Others.SendAsync("UserDisconnected", new User
             {
                 ConnectionId = Context.ConnectionId,

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Toast } from '../../../models/toast';
 
 @Component({
@@ -6,18 +6,8 @@ import { Toast } from '../../../models/toast';
   templateUrl: './notification-item.component.html',
   styleUrls: ['./notification-item.component.scss'],
 })
-export class NotificationItemComponent implements OnInit {
-  // REVIEW: Hier würde ein public fehlen oder bei allen anderen publics eben entfernen.
+export class NotificationItemComponent {
   @Input()
-  toast: Toast;
-
-  // REVIEW: Ist leer, kann weg
-  constructor() {
-  }
-
-  // REVIEW: Ist leer, kann weg
-  ngOnInit(): void {
-  }
-
+  public toast: Toast;
 }
 

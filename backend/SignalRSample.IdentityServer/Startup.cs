@@ -92,19 +92,7 @@ namespace SignalRSample.IdentityServer
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
-            /*if (Environment.IsDevelopment())
-            {
-                builder.AddDeveloperSigningCredential();
-            }
-            else
-            {
-              // REVIEW: Brauchst Du das hier überhaupt für eine Demo? Reicht da nicht das DeveloperSigningCredential oben?
-                // TODO: save in configuration
-                builder.AddSigningCredential(
-                    new X509Certificate2(Path.Combine("IdentityServerCert.pfx"),
-                        "signalr"));
-            }*/
-
+            // REVIEW: Brauchst Du das hier überhaupt für eine Demo? Reicht da nicht das DeveloperSigningCredential oben? CHECK
             services.AddAuthentication();
         }
 

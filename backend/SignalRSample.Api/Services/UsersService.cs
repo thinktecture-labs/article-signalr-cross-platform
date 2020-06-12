@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SignalRSample.Api.Database;
 using SignalRSample.Api.Models;
 
 namespace SignalRSample.Api.Services
@@ -10,38 +14,53 @@ namespace SignalRSample.Api.Services
     // Plus, Du könntest ein IUsersService definieren und dann eben hier den InMemoryUsersService implementieren.
     // Generell würde ich sonst die Methoden hier in der Klasse als Task auslegen und mit async/await arbeiten,
     // da das in einem echten Server eben bedingt durch den Zugriff auf eine weitere Ressource sinnvoller erscheint.
-    public class UsersService
+    // CHECK
+    public class UsersService : IUsersService
     {
-        // REVIEW: Hier wäre es auch möglich, wenn Du bei dieser Art der Implementierung bleibst,
-        // auch auf ein Dictionary zurückzugreifen, da Du im Falle eines echten Servers mehr ID-basierte Zugriffe hast
-        // als listenbasierte Zugriffe. Das würde dann unten auch die .All und .FirstOrDefault-Zugriffe schneller machen.
-        private static readonly List<User> _users = new List<User>();
+        private readonly UserDbContext _context;
 
-        public List<User> GetAllUsers()
+        public UsersService(UserDbContext context)
         {
-            return _users;
+            _context = context;
         }
 
-        public void AddUser(string connectionId, string userName)
+        public Task<List<User>> GetAllUsersAsync(CancellationToken cancellationToken)
         {
-            // REVIEW: Performancetechnisch würde ich hier auf ein _users.Any(user => user.ConnectionId == connectionId) wechseln.
-            // Bei .All müssen alle _users durchlaufen werden, bei .Any wird beim ersten Auffinden einer passenden connectionId sofort abgebrochen.
-            if (_users.All(u => u.ConnectionId != connectionId))
+            return _context.Users.ToListAsync(cancellationToken);
+        }
+
+        public async Task AddUserAsync(string connectionId, string userName)
+        {
+            if (connectionId == null)
             {
-                _users.Add(new User
+                throw new ArgumentNullException(nameof(connectionId));
+            }
+
+            // REVIEW: Performancetechnisch würde ich hier auf ein _users.Any(user => user.ConnectionId == connectionId) wechseln.
+            // Bei .All müssen alle _users durchlaufen werden, bei .Any wird beim ersten Auffinden einer passenden connectionId sofort abgebrochen. CHECK
+            if (!_context.Users.Any(u => u.ConnectionId == connectionId))
+            {
+                await _context.Users.AddAsync(new User
                 {
                     ConnectionId = connectionId,
                     Name = String.IsNullOrWhiteSpace(userName) ? connectionId : userName
                 });
+                await _context.SaveChangesAsync();
             }
         }
 
-        public void RemoveUser(string connectionId)
+        public async Task RemoveUserAsync(string connectionId)
         {
-            var user = _users.FirstOrDefault(u => u.ConnectionId == connectionId);
+            if (connectionId == null)
+            {
+                throw new ArgumentNullException(nameof(connectionId));
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.ConnectionId == connectionId);
             if (user != null)
             {
-                _users.Remove(user);
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
             }
         }
     }

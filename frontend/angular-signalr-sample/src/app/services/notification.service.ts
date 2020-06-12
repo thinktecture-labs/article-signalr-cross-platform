@@ -6,21 +6,25 @@ import { Toast } from '../models/toast';
   providedIn: 'root'
 })
 export class NotificationService {
-  private notifications = new Array<Toast>();
+  private notifications: Toast[] = [];
 
-  items$: Observable<Toast[]>;
+  public items$: Observable<Toast[]>;
   public hasItems$ = new BehaviorSubject<boolean>(false);
 
   constructor() {
     this.items$ = of(this.notifications);
   }
 
-  public addNotification(toast: Toast) {
+  public showNotification(toast: Toast, duration: number = 1000): void {
     this.notifications.push(toast);
     this.hasItems$.next(this.notifications.length > 0);
+
+    setTimeout(() => {
+      this.removeNotification(toast);
+    }, duration);
   }
 
-  public removeNotification(toast: Toast) {
+  private removeNotification(toast: Toast): void {
     const index = this.notifications.indexOf(toast);
     if (index > -1) {
       this.notifications.splice(index, 1);

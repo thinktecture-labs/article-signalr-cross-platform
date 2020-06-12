@@ -1,21 +1,6 @@
 :host {
-  height: 100%;
-  width: 100%;
   cursor: pointer;
   user-select: none;
-  &.middle {
-    div {
-      border-left: 1px solid black;
-      border-right: 1px solid black;
-    }
-  }
-  &.other {
-    div {
-      color: #ff584f;
-    }
-  }
-}
-div {
   height: 62px;
   width: 62px;
   background-color: white;
@@ -25,4 +10,13 @@ div {
   justify-content: center;
   align-items: center;
   font-size: 62px;
+
+  &.middle {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+  }
+
+  &.other {
+    color: #ff584f;
+  }
 }

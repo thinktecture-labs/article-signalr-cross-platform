@@ -1,4 +1,5 @@
-using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SignalRSample.Api.Services;
@@ -9,19 +10,20 @@ namespace SignalRSample.Api.Controllers
     [Authorize]
     public class UsersController : Controller
     {
-        private readonly UsersService _usersService;
+        private readonly IUsersService _usersService;
 
-        public UsersController(UsersService usersService)
+        public UsersController(IUsersService usersService)
         {
             // REVIEW: Könnte man auch weglassen, da der Controller über DI aktiviert wird und es dann in der DI schon knallt
             // wenn der UsersService nicht existiert.
-            _usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
+            _usersService = usersService;
         }
 
         [HttpGet]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
         {
-            return Ok(_usersService.GetAllUsers());
+            var result = await _usersService.GetAllUsersAsync(cancellationToken);
+            return Ok(result);
         }
     }
 }

@@ -23,12 +23,12 @@ export class AppComponent implements OnInit {
     this.configureCodeFlow();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.isMobileDevice = this.deviceService.isMobile();
     this.isTabletDevice = this.deviceService.isTablet();
   }
 
-  private configureCodeFlow() {
+  private configureCodeFlow(): void {
     this.oauthService.configure(authConfig);
   }
 }

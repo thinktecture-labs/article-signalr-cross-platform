@@ -10,13 +10,11 @@ import { UsersService } from '../../services/users.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
   public users$: BehaviorSubject<User[]>;
-
 
   constructor(private readonly signalRService: SignalRService, public readonly usersService: UsersService) { }
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.signalRService.startConnection();
     this.users$ = this.usersService.users$;
   }

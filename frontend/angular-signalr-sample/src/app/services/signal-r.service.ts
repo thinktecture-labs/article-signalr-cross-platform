@@ -68,32 +68,32 @@ export class SignalRService {
   }
 
   // REVIEW: Gibt's einen Grund, warum alle die Funktionen hier nicht als echte Funktion sondern als Felder deklariert sind?
-  private addReconnectListener = () => {
+  private addReconnectListener(): void {
     this.hubConnection.onreconnected(_ => {
       this.notify('Die Verbindung wurde wieder hergestellt').catch(err => console.log(err));
-    })
+    });
   }
 
-  private addTransferUserConnectedListener = () => {
+  private addTransferUserConnectedListener(): void {
     this.hubConnection.on('UserConnected', (data) => {
       this.userOnline$.next(data);
     });
   };
 
-  private addTransferUserDisconnectedListener = () => {
+  private addTransferUserDisconnectedListener(): void {
     this.hubConnection.on('UserDisconnected', (data) => {
       this.userOffline$.next(data);
     });
   };
 
-  private addTransferPlayRoundListener = () => {
+  private addTransferPlayRoundListener(): void {
     this.hubConnection.on('Play', (data) => {
       console.log('User played its your turn');
       this.userPlayed$.next(data);
     });
   };
 
-  private addTransferResetListener = () => {
+  private addTransferResetListener(): void {
     this.hubConnection.on('Reset', () => {
       console.log('User reset the game');
       this.resetGame$.next(void 0);
@@ -101,16 +101,13 @@ export class SignalRService {
   };
 
   // REVIEW: Warum muss der SignalR-Service die Toast Notification wieder löschen?
-  // Das ist definitiv die Zuständigkeit vom NotificationService.
-  // Zudem fehlt das Typing für payload.
-  // Und Payload sollte eher title heißen?
-  private async notify(payload) {
+  // Das ist definitiv die Zuständigkeit vom NotificationService. CHECK
+  // Zudem fehlt das Typing für payload. CHECK
+  // Und Payload sollte eher title heißen? CHECK
+  private async notify(title: string): Promise<void> {
     const toast = {
-      title: payload,
+      title,
     } as Toast;
-    this.notificationService.addNotification(toast);
-    setTimeout(() => {
-      this.notificationService.removeNotification(toast);
-    }, 1000);
+    this.notificationService.showNotification(toast);
   }
 }

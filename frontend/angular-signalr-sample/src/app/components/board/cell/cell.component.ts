@@ -9,11 +9,11 @@ export class CellComponent {
   @Input()
   public value: string;
 
-  @Output('userClick')
-  public click = new EventEmitter<void>();
+  @Output()
+  public userClick = new EventEmitter<void>();
 
   @HostListener('click')
-  clickHandler() {
-    this.click.emit(void 0);
+  public clickHandler() {
+    this.userClick.emit(void 0);
   }
 }

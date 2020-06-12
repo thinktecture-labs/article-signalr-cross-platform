@@ -5,9 +5,11 @@ using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SignalRSample.Api.Database;
 using SignalRSample.Api.Hubs;
 using SignalRSample.Api.Services;
 
@@ -27,7 +29,9 @@ namespace SignalRSample.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<UsersService>();
+            services.AddDbContext<UserDbContext>(
+                options => options.UseInMemoryDatabase("Users"));
+            services.AddScoped<IUsersService, UsersService>();
             services.AddControllers();
             services.AddCors(options =>
             {
@@ -45,8 +49,9 @@ namespace SignalRSample.Api
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
-                    // options.Authority = "http://localhost:5000";
+                    // TODO: Add to config
+                    // options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
+                    options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
                     options.Audience = "signalr-api";
                     options.Events = new JwtBearerEvents
@@ -73,8 +78,9 @@ namespace SignalRSample.Api
                 })
                 .AddIdentityServerAuthentication("token", options =>
                 {
-                    options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
-                    // options.Authority = "http://localhost:5000";
+                    // TODO: Add to config
+                    // options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
+                    options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
 
                     options.ApiName = "signalr-api";

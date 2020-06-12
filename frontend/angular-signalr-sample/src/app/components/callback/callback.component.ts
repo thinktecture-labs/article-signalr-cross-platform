@@ -12,8 +12,8 @@ export class CallbackComponent implements OnInit {
   constructor(private readonly oauthService: OAuthService, private readonly router: Router) {
   }
 
-  ngOnInit(): void {
-    // REVIEW: Hab mal etwas lesbarer umgebrochen.
+  public ngOnInit(): void {
+    // REVIEW: Hab mal etwas lesbarer umgebrochen. CHECK
     this.oauthService.loadDiscoveryDocumentAndTryLogin().then(success => {
         console.log('loadDiscoveryDocumentAndTryLogin', success);
         this.router.navigate(['/']);

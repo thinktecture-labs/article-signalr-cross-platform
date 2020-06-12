@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Events;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
@@ -48,7 +48,7 @@ namespace SignalRSample.IdentityServer.ViewModels.Account
         /// initiate roundtrip to external authentication provider
         /// </summary>
         [HttpGet]
-        public  async Task<IActionResult> Challenge(string provider, string returnUrl)
+        public IActionResult Challenge(string provider, string returnUrl)
         {
             if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
 
@@ -81,7 +81,7 @@ namespace SignalRSample.IdentityServer.ViewModels.Account
         {
             // read external identity from the temporary cookie
             var result =
-                await HttpContext.AuthenticateAsync(IdentityServer4.IdentityServerConstants
+                await HttpContext.AuthenticateAsync(IdentityServerConstants
                     .ExternalCookieAuthenticationScheme);
             if (result?.Succeeded != true)
             {
@@ -118,7 +118,7 @@ namespace SignalRSample.IdentityServer.ViewModels.Account
                 additionalLocalClaims.ToArray());
 
             // delete temporary cookie used during external authentication
-            await HttpContext.SignOutAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            await HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
 
             // retrieve return URL
             var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";

@@ -5,10 +5,12 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Test;
 
 namespace SignalRSample.IdentityServer.ViewModels
 {
+    // TODO: CHECK External Controller
     // REVIEW: Was ist hiermit? Du bootstrappst ja die Datenbank mit Testbenutzern, dann würde ich diese hier entfernen.
     public class TestUsers
     {
@@ -27,7 +29,7 @@ namespace SignalRSample.IdentityServer.ViewModels
                     new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
                     new Claim(JwtClaimTypes.Address,
                         @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }",
-                        IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json)
+                        IdentityServerConstants.ClaimValueTypes.Json)
                 }
             },
             new TestUser
@@ -43,7 +45,7 @@ namespace SignalRSample.IdentityServer.ViewModels
                     new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
                     new Claim(JwtClaimTypes.Address,
                         @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }",
-                        IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json),
+                        IdentityServerConstants.ClaimValueTypes.Json),
                     new Claim("location", "somewhere")
                 }
             }

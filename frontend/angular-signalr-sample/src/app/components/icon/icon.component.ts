@@ -6,14 +6,10 @@ import { Component, HostBinding, Input } from '@angular/core';
   styleUrls: ['./icon.component.scss'],
 })
 export class IconComponent {
-
   @Input()
   public name: string;
 
   @HostBinding('class.disabled')
   @Input()
   public disabled: boolean;
-
-  constructor() {
-  }
 }

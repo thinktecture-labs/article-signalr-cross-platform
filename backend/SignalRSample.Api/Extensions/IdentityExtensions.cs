@@ -11,12 +11,5 @@ namespace SignalRSample.Api.Extensions
             var userNameClaim = user.FindFirst(c => c.Type == JwtClaimTypes.Name);
             return userNameClaim != null ? userNameClaim.Value : String.Empty;
         }
-        
-        // REVIEW: Wird nicht genutzt?
-        public static string UserId(this ClaimsPrincipal user)
-        {
-            var userIdClaim = user.FindFirst(c => c.Type == "sub");
-            return userIdClaim != null ? userIdClaim.Value : String.Empty;
-        }
     }
 }
