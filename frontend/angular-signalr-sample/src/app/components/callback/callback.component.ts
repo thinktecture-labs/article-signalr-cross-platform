@@ -5,16 +5,20 @@ import { OAuthService } from 'angular-oauth2-oidc';
 @Component({
   selector: 'sr-callback',
   templateUrl: './callback.component.html',
-  styleUrls: ['./callback.component.scss']
+  styleUrls: ['./callback.component.scss'],
 })
 export class CallbackComponent implements OnInit {
 
-  constructor(private readonly oauthService: OAuthService, private readonly router: Router) { }
+  constructor(private readonly oauthService: OAuthService, private readonly router: Router) {
+  }
 
   ngOnInit(): void {
+    // REVIEW: Hab mal etwas lesbarer umgebrochen.
     this.oauthService.loadDiscoveryDocumentAndTryLogin().then(success => {
-      console.log('loadDiscoveryDocumentAndTryLogin', success);
-      this.router.navigate(['/']);
-    }, _ => this.router.navigate(['login']));
+        console.log('loadDiscoveryDocumentAndTryLogin', success);
+        this.router.navigate(['/']);
+      },
+      _ => this.router.navigate(['login']),
+    );
   }
 }

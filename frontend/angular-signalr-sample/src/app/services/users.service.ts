@@ -22,6 +22,9 @@ export class UsersService {
     this.inti();
   }
 
+  // REVIEW: Schreibfehler
+  // Warum public? wird nur hier benutzt?
+  // Auch hier wird subscribed, aber nie wieder unsubscribed.
   public inti() {
     combineLatest([this.httpClient.get<User[]>(`${environment.apiBaseUrl}users`), this.signalRService.ownUser$])
       .pipe(

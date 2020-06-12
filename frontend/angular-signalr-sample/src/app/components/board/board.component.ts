@@ -9,7 +9,12 @@ import { SignalRService } from '../../services/signal-r.service';
 export class BoardComponent implements OnInit {
   public turn = 'X';
   public gameOver = false;
+
+  // REVIEW: Hier wird später den items auch null zugewiesen, was prinzipiell ja geht, solange strictNullCheck ausgeschaltet sind.
+  // Ggf. strictNullCheck einschalten und die Typings besser gestalten.
   public cells: string[] = [];
+
+  // REVIEW: Was für ein Typing hat winner? "Null" ist es ja quasi von sich aus.
   public winner = null;
 
 
@@ -21,16 +26,23 @@ export class BoardComponent implements OnInit {
 
   public ngOnInit(): void {
     this.init();
+
+    // REVIEW: Hier wird zwar subscribed, aber nie wieder unsubscribed.
     this.signalRService.userPlayed$.subscribe(data => {
         this.otherPlay(data);
     });
 
+    // REVIEW: Hier wird zwar subscribed, aber nie wieder unsubscribed.
+    // Zudem nicht benutzte Parameter löschen und ggf. ein Body im Lambda, wenn's nicht gebraucht wird.
     this.signalRService.resetGame$.subscribe(data => {
       this.init();
     });
   }
 
   public async resetGame(): Promise<void> {
+    // REVIEW: Ist das hier von der Logik korrekt? Du willst ja die Runde resetten
+    // und dann eigentlich warten bis der Server die bestätigung schickt? (Was er nicht kann, weil er keine Game Logik kennt)
+    // Aktuell resettest Du einfach, wenn das Command in SignalR abgesetzt wurde.
     await this.signalRService.resetRound();
     this.init();
   }
@@ -59,6 +71,7 @@ export class BoardComponent implements OnInit {
     if (!this.gameOver && !this.waitForOther) {
       if (this.cells[idx] === null) {
         this.cells[idx] = this.turn;
+        // REVIEW: Hier ist ja das gleiche Problem, wie mit der resetRound oben.
         await this.signalRService.sendPlayRound(idx);
         this.checkWinner();
         if (!this.gameOver) {

@@ -16,6 +16,8 @@ namespace BlazorSignalRSample.Client.Services
         private readonly SignalRService _signalRService;
         private readonly IUserManager _userManager;
         private List<User> _users = new List<User>();
+        
+        // REVIEW: public event ...
         public EventHandler<User[]> CurrentUsers;
 
 
@@ -41,6 +43,7 @@ namespace BlazorSignalRSample.Client.Services
         private void OnUserConnected(object sender, UserEventArgs data)
         {
             Console.WriteLine($"User connected, {data}");
+            // REVIEW: if (_users.All( != )) ist in dem Fall das gleiche und besser zu lesen.
             if (!_users.Any(u => u.connectionId == data.User.connectionId)) 
             {
                 _users.Add(data.User);

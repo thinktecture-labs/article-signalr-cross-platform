@@ -9,6 +9,7 @@ using IdentityServer4.Test;
 
 namespace SignalRSample.IdentityServer.ViewModels
 {
+    // REVIEW: Was ist hiermit? Du bootstrappst ja die Datenbank mit Testbenutzern, dann würde ich diese hier entfernen.
     public class TestUsers
     {
         public static List<TestUser> Users = new List<TestUser>

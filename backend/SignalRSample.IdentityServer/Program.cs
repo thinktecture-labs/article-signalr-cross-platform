@@ -4,16 +4,18 @@
 
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using SignalRSample.IdentityServer.Data;
 
 namespace SignalRSample.IdentityServer
 {
     public class Program
     {
-        public async static Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -27,7 +29,12 @@ namespace SignalRSample.IdentityServer
                     theme: AnsiConsoleTheme.Literate)
                 .CreateLogger();
 
-            await CreateHostBuilder(args).Build().RunAsync();
+            var host = CreateHostBuilder(args).Build();
+            
+            var databaseInitializer = host.Services.GetRequiredService<DatabaseInitializer>();
+            await databaseInitializer.InitializeAsync();
+
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
