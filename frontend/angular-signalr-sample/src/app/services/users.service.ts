@@ -27,9 +27,6 @@ export class UsersService implements OnDestroy{
     this.subscription.unsubscribe();
   }
 
-  // REVIEW: Schreibfehler
-  // Warum public? wird nur hier benutzt? CHECK
-  // Auch hier wird subscribed, aber nie wieder unsubscribed. QUEST?
   private init() {
     combineLatest([this.httpClient.get<User[]>(`${environment.apiBaseUrl}users`), this.signalRService.ownUser$])
       .pipe(

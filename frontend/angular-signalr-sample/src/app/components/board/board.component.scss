@@ -24,18 +24,3 @@
 .clearfix:last-child {
   border: none;
 }
-
-.overlay {
-  position: absolute;
-  top: 64px;
-  z-index: 10;
-  -webkit-backdrop-filter: blur(10px) grayscale(30%);
-  backdrop-filter: blur(10px) grayscale(30%);
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}

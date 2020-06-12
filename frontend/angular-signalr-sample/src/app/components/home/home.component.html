@@ -1,9 +1,10 @@
-<div *ngFor="let user of users$ | async">
-  <p>{{user.name}}: {{user.connectionId}}</p>
-</div>
 <div class="container">
-  <sr-board *ngIf="(users$ | async)?.length > 0; else waiting"></sr-board>
+  <sr-board *ngIf="gameRunning$ | async; else waiting"></sr-board>
   <ng-template #waiting>
     <div>Waiting for user....</div>
   </ng-template>
+</div>
+<div class="overlay" *ngIf="gameOver$ |async">
+  <div>{{winner}}</div>
+  <button mat-raised-button (click)="joinNewGame()">Neues Spiel</button>
 </div>

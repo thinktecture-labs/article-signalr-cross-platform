@@ -31,6 +31,7 @@ namespace SignalRSample.Api
         {
             services.AddDbContext<UserDbContext>(
                 options => options.UseInMemoryDatabase("Users"));
+            services.AddSingleton<GameSessionManager>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddControllers();
             services.AddCors(options =>
@@ -50,8 +51,8 @@ namespace SignalRSample.Api
                 .AddJwtBearer("Bearer", options =>
                 {
                     // TODO: Add to config
-                    // options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
-                    options.Authority = "http://localhost:5000";
+                    options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
+                    // options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
                     options.Audience = "signalr-api";
                     options.Events = new JwtBearerEvents
@@ -79,8 +80,8 @@ namespace SignalRSample.Api
                 .AddIdentityServerAuthentication("token", options =>
                 {
                     // TODO: Add to config
-                    // options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
-                    options.Authority = "http://localhost:5000";
+                    options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
+                    // options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
 
                     options.ApiName = "signalr-api";

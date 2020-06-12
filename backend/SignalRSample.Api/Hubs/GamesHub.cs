@@ -12,12 +12,12 @@ namespace SignalRSample.Api.Hubs
     public class GamesHub : Hub
     {
         private readonly IUsersService _usersService;
+        private readonly GameSessionManager _manager;
 
-        public GamesHub(IUsersService usersService)
+        public GamesHub(IUsersService usersService, GameSessionManager manager)
         {
-            // REVIEW: Könnte man auch weglassen, da der Hub über DI aktiviert wird und es dann in der DI schon knallt
-            // wenn der UsersService nicht existiert.
             _usersService = usersService;
+            _manager = manager;
         }
 
         public async Task SendNotification(string message)
@@ -25,9 +25,14 @@ namespace SignalRSample.Api.Hubs
             await Clients.Others.SendAsync("Notifications", message);
         }
 
-        public Task PlayRound(string data)
+        public async Task JoinSession()
         {
-            return Clients.Others.SendAsync("Play", data);
+            await _manager.AddUserAsync(Context.ConnectionId);
+        }
+
+        public async Task PlayRound(int data)
+        {
+            await _manager.PlayRoundAsync(Context.ConnectionId, data);
         }
 
         public Task ResetGame()
@@ -44,19 +49,9 @@ namespace SignalRSample.Api.Hubs
             };
         }
 
-        public override async Task OnConnectedAsync()
-        {
-            await _usersService.AddUserAsync(Context.ConnectionId, Context.User.UserName());
-            await Clients.Others.SendAsync("UserConnected", new User
-            {
-                ConnectionId = Context.ConnectionId,
-                Name = Context.User.UserName()
-            });
-            await base.OnConnectedAsync();
-        }
-
         public override async Task OnDisconnectedAsync(Exception exception)
         {
+            await _manager.RemoveUserAsync(Context.ConnectionId);
             await _usersService.RemoveUserAsync(Context.ConnectionId);
             await Clients.Others.SendAsync("UserDisconnected", new User
             {

@@ -15,7 +15,10 @@ export class NotificationService {
     this.items$ = of(this.notifications);
   }
 
-  public showNotification(toast: Toast, duration: number = 1000): void {
+  public showNotification(title: string, duration: number = 1000): void {
+    const toast = {
+      title,
+    } as Toast;
     this.notifications.push(toast);
     this.hasItems$.next(this.notifications.length > 0);
 

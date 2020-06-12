@@ -13,7 +13,6 @@ export class CallbackComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    // REVIEW: Hab mal etwas lesbarer umgebrochen. CHECK
     this.oauthService.loadDiscoveryDocumentAndTryLogin().then(success => {
         console.log('loadDiscoveryDocumentAndTryLogin', success);
         this.router.navigate(['/']);

@@ -10,7 +10,6 @@ import { verticalCollapseAnimation } from '../animations/vertical-collapse.anima
   selector: 'sr-notifications',
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
-  // REVIEW: Warum sind die anderen zwei Animationen ausgelagert, aber die dritte nicht? CHECK
   animations: [
     slideInAnimation,
     slideOutAnimation,
@@ -21,7 +20,6 @@ import { verticalCollapseAnimation } from '../animations/vertical-collapse.anima
 export class NotificationsComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
-  // REVIEW: Hier hat der Decorator einen anderen Codestyle als in den anderen Klassen, warum? CHECK
   @HostBinding('class.open')
   public hasItems: boolean;
 
