@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using SignalRSample.Api.Hubs;
@@ -10,45 +11,47 @@ namespace SignalRSample.Api.Services
 {
     public class GameSessionManager
     {
-        private static int[][] _winningOptions =
+        private static readonly int[][] WinningOptions =
         {
-            new int[] {0, 1, 2},
-            new int[] {3, 4, 5},
-            new int[] {6, 7, 8},
-            new int[] {0, 3, 6},
-            new int[] {1, 4, 7},
-            new int[] {2, 5, 8},
-            new int[] {0, 4, 8},
-            new int[] {2, 4, 6},
+            new[] {0, 1, 2},
+            new[] {3, 4, 5},
+            new[] {6, 7, 8},
+            new[] {0, 3, 6},
+            new[] {1, 4, 7},
+            new[] {2, 5, 8},
+            new[] {0, 4, 8},
+            new[] {2, 4, 6},
         };
 
         private readonly IHubContext<GamesHub> _hubContext;
-        private List<GameSession> _sessions = new List<GameSession>();
+        private readonly List<GameSession> _sessions = new List<GameSession>();
 
         public GameSessionManager(IHubContext<GamesHub> hubContext)
         {
             _hubContext = hubContext;
         }
 
-        public async Task AddUserAsync(string clientId)
+        public async Task AddUserAsync(User client)
         {
-            var session = _sessions.FirstOrDefault(s => String.IsNullOrWhiteSpace(s.UserTwo));
+            var session = _sessions.FirstOrDefault(s => s.UserTwo == null && s.UserOne != null);
             if (session != null)
             {
-                session.UserTwo = clientId;
-                session.ActiveUser = session.UserOne;
+                Console.WriteLine(
+                    $"Session found which is open and not started. {JsonSerializer.Serialize(session)}");
+                session.UserTwo = client;
+                session.ActiveUser = session.UserOne.ConnectionId;
             }
             else
             {
                 session = new GameSession
                 {
                     SessionId = $"Game{_sessions.Count}",
-                    UserOne = clientId
+                    UserOne = client
                 };
                 _sessions.Add(session);
             }
 
-            await _hubContext.Groups.AddToGroupAsync(clientId, session.SessionId);
+            await _hubContext.Groups.AddToGroupAsync(client.ConnectionId, session.SessionId);
             if (!String.IsNullOrWhiteSpace(session.ActiveUser))
             {
                 Console.WriteLine(
@@ -57,63 +60,69 @@ namespace SignalRSample.Api.Services
             }
         }
 
-        public async Task RemoveUserAsync(string contextId)
+        public async Task RemoveUserAsync(string clientId)
         {
-            var session = _sessions.FirstOrDefault(s => String.IsNullOrWhiteSpace(s.UserTwo));
+            var session = _sessions.FirstOrDefault(s =>
+                s.UserOne?.ConnectionId == clientId || s.UserTwo?.ConnectionId == clientId);
             if (session != null)
             {
-                Console.WriteLine($"Remove user from Group. Session: {session.SessionId}, User: {contextId}");
-                await _hubContext.Groups.RemoveFromGroupAsync(contextId, session.SessionId);
+                Console.WriteLine($"Remove user from Group. Session: {session.SessionId}, User: {clientId}");
+                await _hubContext.Groups.RemoveFromGroupAsync(clientId, session.SessionId);
                 await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver", "Lost");
                 session.Moves = new List<KeyValuePair<string, int>>();
                 session.ActiveUser = String.Empty;
             }
         }
 
-        public async Task PlayRoundAsync(string contextId, int value)
+        public async Task PlayRoundAsync(string clientId, int value)
         {
-            var session = _sessions.FirstOrDefault(s => s.UserOne == contextId || s.UserTwo == contextId);
-            if (session?.ActiveUser == contextId)
+            var session = _sessions.FirstOrDefault(s =>
+                s.UserOne?.ConnectionId == clientId || s.UserTwo?.ConnectionId == clientId);
+            if (session?.ActiveUser == clientId)
             {
-                session?.Moves.Add(new KeyValuePair<string, int>(contextId, value));
+                session?.Moves.Add(new KeyValuePair<string, int>(clientId, value));
                 if (CheckSessionState(session, out var winner))
                 {
                     await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver", winner);
-                    await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne, session.SessionId);
-                    await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo, session.SessionId);
+                    await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne.ConnectionId, session.SessionId);
+                    await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo.ConnectionId, session.SessionId);
                     _sessions.Remove(session);
                 }
                 else
                 {
-                    session.ActiveUser = session.UserOne == contextId ? session.UserTwo : session.UserOne;
-                    await _hubContext.Clients.GroupExcept(session.SessionId, contextId).SendAsync("Play", value);
+                    session.ActiveUser = session.UserOne.ConnectionId == clientId
+                        ? session.UserTwo.ConnectionId
+                        : session.UserOne.ConnectionId;
+                    await _hubContext.Clients.GroupExcept(session.SessionId, clientId).SendAsync("Play", value);
                 }
             }
             else
             {
-                await _hubContext.Clients.User(contextId).SendAsync("NotAllowed");
+                await _hubContext.Clients.User(clientId).SendAsync("NotAllowed");
             }
         }
 
         private bool CheckSessionState(GameSession gameSession, out string winner)
         {
             winner = String.Empty;
-            var firstUser = gameSession.Moves.Where(m => m.Key == gameSession.UserOne).Select(m => m.Value);
-            var secondUser = gameSession.Moves.Where(m => m.Key == gameSession.UserTwo).Select(m => m.Value);
+            var firstUser = gameSession.Moves.Where(m => m.Key == gameSession.UserOne.ConnectionId)
+                .Select(m => m.Value);
+            var secondUser = gameSession.Moves.Where(m => m.Key == gameSession.UserTwo.ConnectionId)
+                .Select(m => m.Value);
 
             var gameOver = false;
-            foreach (var line in _winningOptions)
+            foreach (var line in WinningOptions)
             {
                 if (line.Intersect(firstUser).Count() == line.Count())
                 {
                     gameOver = true;
-                    winner = gameSession.UserOne;
+                    winner = gameSession.UserTwo.ConnectionId;
                 }
 
                 if (line.Intersect(secondUser).Count() == line.Count())
                 {
                     gameOver = true;
-                    winner = gameSession.UserOne;
+                    winner = gameSession.UserOne.ConnectionId;
                 }
             }
 

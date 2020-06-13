@@ -92,7 +92,6 @@ namespace SignalRSample.IdentityServer
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
-            // REVIEW: Brauchst Du das hier überhaupt für eine Demo? Reicht da nicht das DeveloperSigningCredential oben? CHECK
             services.AddAuthentication();
         }
 

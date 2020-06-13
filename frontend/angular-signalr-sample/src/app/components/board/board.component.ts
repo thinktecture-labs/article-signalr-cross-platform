@@ -11,6 +11,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
   public turn = 'X';
+  public opponent: string;
   public gameOver = false;
   public cells?: string[] = [];
 
@@ -30,21 +31,17 @@ export class BoardComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.subscription.add(
+    /*this.subscription.add(
       this.signalRService.resetGame$.subscribe(_ => {
         this.init();
       }),
-    );
+    );*/
 
     this.subscription.add(
-      this.signalRService.gameRunning$.subscribe(running => {
-      }),
-    );
-
-    this.subscription.add(
-      this.signalRService.activeUser$.subscribe(user => {
-        this.waitForOther = user !== localStorage.getItem('ownId');
-        console.log(user, localStorage.getItem('ownId'), this.waitForOther);
+      this.signalRService.activeSession$.subscribe(session => {
+        if (session !== null) {
+          this.waitForOther = session.activeUser !== localStorage.getItem('ownId');
+        }
       }),
     );
   }

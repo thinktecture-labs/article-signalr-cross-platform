@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public gameRunning$ = new BehaviorSubject<boolean>(false);
   public gameOver$ = new BehaviorSubject<boolean>(false);
   public winner: string;
+  public opponent: string;
 
   constructor(private readonly signalRService: SignalRService) { }
 
@@ -25,9 +26,19 @@ export class HomeComponent implements OnInit, OnDestroy {
       } else if (result === 'Lost') {
         this.winner = 'Der Gegner hat die Verbindung verloren oder aufgegeben!';
       }  else {
+        console.log(result, localStorage.getItem('ownId'));
         this.winner = result === localStorage.getItem('ownId') ? 'Du hast gewonnen!' : 'Du hast leider verloren.';
       }
       this.gameOver$.next(!!result);
+    }));
+    this.subscription.add(this.signalRService.activeSession$.subscribe(session => {
+      if (session != null) {
+        this.opponent = session.userOne.connectionId === localStorage.getItem('ownId')
+          ? session.userTwo.name
+          : session.userOne.name;
+      } else {
+        this.opponent = null;
+      }
     }));
   }
 

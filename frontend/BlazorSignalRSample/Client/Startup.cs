@@ -15,7 +15,6 @@ namespace BlazorSignalRSample.Client
         {
             services.AddTransient<HttpClient>();
             services.AddScoped<SignalRService>();
-            services.AddScoped<UserService>();
 
             services.AddMatToaster(config =>
             {

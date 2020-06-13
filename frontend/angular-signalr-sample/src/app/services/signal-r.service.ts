@@ -13,10 +13,10 @@ import { NotificationService } from './notification.service';
 export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public userPlayed$ = new Subject<number>();
-  public resetGame$ = new Subject<void>();
+  // public resetGame$ = new Subject<void>();
   public gameRunning$ = new BehaviorSubject<boolean>(false);
   public gameOver$ = new BehaviorSubject<string>('');
-  public activeUser$ = new BehaviorSubject<string>('');
+  public activeSession$ = new BehaviorSubject<GameSession>(null);
   public ownUser$ = new Subject<User>();
 
   constructor(
@@ -71,8 +71,9 @@ export class SignalRService {
 
   private addStartGameListener(): void {
     this.hubConnection.on('StartGame', (session: GameSession) => {
+      console.log(`Start Game: ${session}`);
       this.gameRunning$.next(true);
-      this.activeUser$.next(session.activeUser);
+      this.activeSession$.next(session);
       this.notificationService.showNotification('Das Spiel beginnt :-)');
     });
   }
@@ -81,6 +82,7 @@ export class SignalRService {
     this.hubConnection.on('GameOver', result => {
       this.gameRunning$.next(false);
       this.gameOver$.next(result);
+      this.activeSession$.next(null);
       this.notificationService.showNotification(`Das Spiel ist vorbei. ${result}`);
     });
   }

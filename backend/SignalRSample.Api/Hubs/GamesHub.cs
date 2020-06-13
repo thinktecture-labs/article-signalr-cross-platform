@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -27,7 +28,12 @@ namespace SignalRSample.Api.Hubs
 
         public async Task JoinSession()
         {
-            await _manager.AddUserAsync(Context.ConnectionId);
+            var user = await _usersService.GetUserAsync(Context.ConnectionId);
+            Console.WriteLine(JsonSerializer.Serialize(user));
+            if (user != null)
+            {
+                await _manager.AddUserAsync(user);
+            }
         }
 
         public async Task PlayRound(int data)
@@ -47,6 +53,12 @@ namespace SignalRSample.Api.Hubs
                 ConnectionId = Context.ConnectionId,
                 Name = Context.User.UserName()
             };
+        }
+
+        public override async Task OnConnectedAsync()
+        {
+            await _usersService.AddUserAsync(Context.ConnectionId, Context.User.UserName());
+            await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)

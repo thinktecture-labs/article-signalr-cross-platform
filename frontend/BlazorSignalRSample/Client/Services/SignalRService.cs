@@ -13,10 +13,11 @@ namespace BlazorSignalRSample.Client.Services
         private HubConnection _hubConnection;
         private IMatToaster _toaster;
         private IUserManager _manager;
-        public EventHandler<GameEventArgs> RoundPlayed;
-        public EventHandler ResetGame;
-        public EventHandler<UserEventArgs> UserConnected;
-        public EventHandler<UserEventArgs> UserDisconnected;
+
+        public event EventHandler<GameRunningEventArgs> GameRunning;
+        public event EventHandler<GameOverEventArgs> GameOver;
+        public event EventHandler<ActiveSessionEventArgs> ActiveSession;
+        public event EventHandler<GameEventArgs> RoundPlayed;
 
         public bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
         public string ConnectionId => _hubConnection.ConnectionId;
@@ -44,51 +45,63 @@ namespace BlazorSignalRSample.Client.Services
                 .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10) })
                 .Build();
 
-            _hubConnection.On<User>("UserConnected", (data) =>
+
+            
+
+            // NEW ARCHITECTURE
+            _hubConnection.On("StartGame", (GameSession data) =>
             {
-                Console.WriteLine("SignalRService: User Disconnected");
-                UserConnected?.Invoke(this, new UserEventArgs() { User = data });
-            });
-            _hubConnection.On<User>("UserDisconnected", (data) =>
-            {
-                Console.WriteLine("SignalRService: User Disconnected");
-                UserDisconnected?.Invoke(this, new UserEventArgs() { User = data });
+                GameRunning?.Invoke(this, new GameRunningEventArgs { Running = true });
+                ActiveSession?.Invoke(this, new ActiveSessionEventArgs { Session = data });
             });
 
-            _hubConnection.On<string>("Play", (data) =>
+            _hubConnection.On("GameOver", (string data) =>
+            {
+                GameRunning?.Invoke(this, new GameRunningEventArgs { Running = false });
+                ActiveSession?.Invoke(this, new ActiveSessionEventArgs { Session = null });
+                GameOver?.Invoke(this, new GameOverEventArgs { WinnerId = data});
+            });
+
+            _hubConnection.On<int>("Play", (data) =>
             {
                 Console.WriteLine($"Round Played. Data is {data}");
-                RoundPlayed?.Invoke(this, new GameEventArgs() { Value = Int32.Parse(data) });
-            });
-
-            _hubConnection.On("Reset", () =>
-            {
-                ResetGame?.Invoke(this, null);
+                RoundPlayed?.Invoke(this, new GameEventArgs() { Value = data });
             });
 
             await _hubConnection.StartAsync();
             _toaster.Add("Erfolgreich am Hub angemeldet!", MatToastType.Success);
+            await JoinNewSession();
+        }
+
+        public async Task JoinNewSession() {
+            await _hubConnection.SendAsync("JoinSession");
+            GameOver?.Invoke(this, new GameOverEventArgs { WinnerId = String.Empty });
         }
 
         public async Task PlayRoundAsync(int value) 
         {
             Console.WriteLine("Send play round", value);
-            await _hubConnection.SendAsync("PlayRound", $"{value}");
+            await _hubConnection.SendAsync("PlayRound", value);
         }
+    }
 
-        public async Task ResetGameAsync() 
-        {
-            await _hubConnection.SendAsync("ResetGame");
-        }
+    public class GameRunningEventArgs : EventArgs 
+    {
+        public bool Running { get; set; }
+    }
+
+    public class GameOverEventArgs : EventArgs 
+    {
+        public string WinnerId { get; set; }
+    }
+
+    public class ActiveSessionEventArgs : EventArgs 
+    {
+        public GameSession Session { get; set; }
     }
 
     public class GameEventArgs : EventArgs 
     {
         public int Value { get; set; }
-    }
-
-    public class UserEventArgs : EventArgs 
-    {
-        public User User { get; set; }
     }
 }

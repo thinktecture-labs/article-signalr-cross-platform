@@ -1,3 +1,6 @@
+<div *ngIf="opponent">
+  <p>Du spielst gegen {{opponent}}</p>
+</div>
 <div class="container">
   <sr-board *ngIf="gameRunning$ | async; else waiting"></sr-board>
   <ng-template #waiting>

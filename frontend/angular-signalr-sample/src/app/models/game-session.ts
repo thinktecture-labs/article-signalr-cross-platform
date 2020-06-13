@@ -1,7 +1,9 @@
+import { User } from './user';
+
 export interface GameSession {
   sessionId: string;
-  userOne: string;
-  userTwo: string;
+  userOne: User;
+  userTwo: User;
   activeUser: string;
   moves: KeyValue[];
 }

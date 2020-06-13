@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SignalRSample.Api.Models
+namespace BlazorSignalRSample.Client.Models
 {
     public class GameSession
     {
