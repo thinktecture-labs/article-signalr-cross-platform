@@ -77,8 +77,9 @@ namespace SignalRSample.Api.Services
         public async Task PlayRoundAsync(string clientId, int value)
         {
             var session = _sessions.FirstOrDefault(s =>
-                s.UserOne?.ConnectionId == clientId || s.UserTwo?.ConnectionId == clientId);
-            if (session?.ActiveUser == clientId)
+                (s.UserOne?.ConnectionId == clientId || s.UserTwo?.ConnectionId == clientId) &&
+                s.ActiveUser == clientId);
+            if (session != null)
             {
                 session?.Moves.Add(new KeyValuePair<string, int>(clientId, value));
                 if (CheckSessionState(session, out var winner))

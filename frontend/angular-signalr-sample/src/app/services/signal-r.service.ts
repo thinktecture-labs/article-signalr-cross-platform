@@ -13,7 +13,6 @@ import { NotificationService } from './notification.service';
 export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public userPlayed$ = new Subject<number>();
-  // public resetGame$ = new Subject<void>();
   public gameRunning$ = new BehaviorSubject<boolean>(false);
   public gameOver$ = new BehaviorSubject<string>('');
   public activeSession$ = new BehaviorSubject<GameSession>(null);

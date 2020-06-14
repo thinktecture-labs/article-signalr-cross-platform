@@ -31,12 +31,6 @@ export class BoardComponent implements OnInit, OnDestroy {
       }),
     );
 
-    /*this.subscription.add(
-      this.signalRService.resetGame$.subscribe(_ => {
-        this.init();
-      }),
-    );*/
-
     this.subscription.add(
       this.signalRService.activeSession$.subscribe(session => {
         if (session !== null) {

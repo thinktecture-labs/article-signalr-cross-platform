@@ -38,6 +38,8 @@ namespace SignalRSample.Api.Hubs
 
         public async Task PlayRound(int data)
         {
+            Console.WriteLine(
+                $"PlayRound: User {Context.User.UserName()}; ConnectionId: {Context.ConnectionId} Wert {data}");
             await _manager.PlayRoundAsync(Context.ConnectionId, data);
         }
 

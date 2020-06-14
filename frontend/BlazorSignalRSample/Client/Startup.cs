@@ -33,9 +33,10 @@ namespace BlazorSignalRSample.Client
                 settings.ResponseType = "code";
                 settings.Scope = "openid profile signalr-api.full_access";
                 settings.ClientSecret = "blazor-spa-secret";
+                settings.LoadUserInfo = true;
 
-                settings.MinimumLogeLevel = LogLevel.Information;
-                settings.StorageType = StorageType.SessionStorage;
+                settings.MinimumLogeLevel = LogLevel.Debug;
+                settings.StorageType = StorageType.LocalStorage;
                 settings.InteractionType = InteractionType.Popup;
             });
         }

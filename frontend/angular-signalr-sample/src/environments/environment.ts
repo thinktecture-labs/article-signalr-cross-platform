@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  identityBaseUrl: 'http://localhost:5000',
+  identityBaseUrl: 'https://pj-tt-idsrv.azurewebsites.net',
   apiBaseUrl: 'http://localhost:5002/'
 };
 

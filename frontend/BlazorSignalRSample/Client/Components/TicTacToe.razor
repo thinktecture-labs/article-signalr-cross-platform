@@ -25,7 +25,7 @@
                     <div class="@CellCssClass(_cells[8])" @onclick="@(async (e) => await PlayRound(8))">@(_cells[8])</div>
                 </div>
             </div>
-        } else {
+        } else if (!_gameOver) {
             <p>Waiting for a user</p>
         }
     }
@@ -104,11 +104,12 @@
         {
             _winner = "Der Gegner hat die Verbindung verloren oder aufgegeben!";
         }
-        else
+        else if (!String.IsNullOrWhiteSpace(data.WinnerId))
         {
             _winner = data.WinnerId == _signalRService.ConnectionId ? "Du hast gewonnen!" : "Du hast leider verloren.";
         }
-        _gameOver = true;
+        _gameOver = !String.IsNullOrWhiteSpace(data.WinnerId);
+        
         StateHasChanged();
     }
 
