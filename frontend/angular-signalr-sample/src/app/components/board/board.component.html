@@ -1,29 +1,27 @@
-<div>
-  <div class="clearfix">
-    <sr-cell
-      *ngFor="let cell of cells | slice: 0: 3; let i = index"
-      [value]="cell"
-      (userClick)=onUserClick(i)
-      [class.middle]="i === 1"
-      [class.other]="cell !== turn"></sr-cell>
-    <br>
-  </div>
-  <div class="clearfix">
-    <sr-cell
-      *ngFor="let cell of cells | slice: 3: 6; let i = index"
-      [value]="cell"
-      (userClick)=onUserClick(i+3)
-      [class.middle]="i === 1"
-      [class.other]="cell !== turn"></sr-cell>
-    <br>
-  </div>
-  <div class="clearfix">
-    <sr-cell
-      *ngFor="let cell of cells | slice: 6; let i = index"
-      [value]="cell"
-      (userClick)=onUserClick(i+6)
-      [class.middle]="i === 1"
-      [class.other]="cell !== turn"></sr-cell>
-    <br>
-  </div>
+<div class="clearfix">
+  <sr-cell
+    *ngFor="let cell of cells | slice: 0: 3; let i = index"
+    [value]="cell"
+    (userClick)=onUserClick(i)
+    [class.middle]="i === 1"
+    [class.other]="cell !== turn"></sr-cell>
+  <br>
+</div>
+<div class="clearfix">
+  <sr-cell
+    *ngFor="let cell of cells | slice: 3: 6; let i = index"
+    [value]="cell"
+    (userClick)=onUserClick(i+3)
+    [class.middle]="i === 1"
+    [class.other]="cell !== turn"></sr-cell>
+  <br>
+</div>
+<div class="clearfix">
+  <sr-cell
+    *ngFor="let cell of cells | slice: 6; let i = index"
+    [value]="cell"
+    (userClick)=onUserClick(i+6)
+    [class.middle]="i === 1"
+    [class.other]="cell !== turn"></sr-cell>
+  <br>
 </div>
