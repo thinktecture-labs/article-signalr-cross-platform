@@ -119,23 +119,26 @@ namespace SignalRSample.Api.Services
                     gameOver = true;
                     winner = gameSession.UserTwo.ConnectionId;
                 }
-
-                if (line.Intersect(secondUser).Count() == line.Count())
+                else if (line.Intersect(secondUser).Count() == line.Count())
                 {
                     gameOver = true;
                     winner = gameSession.UserOne.ConnectionId;
                 }
             }
 
-            if (!gameOver)
+            if (gameOver)
             {
-                var occupy = firstUser.Count() + secondUser.Count();
-                if (occupy == 9)
-                {
-                    gameOver = true;
-                    winner = "Tie";
-                }
+                return gameOver;
             }
+
+            var occupy = firstUser.Count() + secondUser.Count();
+            if (occupy != 9)
+            {
+                return gameOver;
+            }
+
+            gameOver = true;
+            winner = "Tie";
 
             return gameOver;
         }

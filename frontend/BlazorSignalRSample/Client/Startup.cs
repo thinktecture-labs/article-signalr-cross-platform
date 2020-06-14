@@ -36,7 +36,7 @@ namespace BlazorSignalRSample.Client
                 settings.LoadUserInfo = true;
 
                 settings.MinimumLogeLevel = LogLevel.Debug;
-                settings.StorageType = StorageType.LocalStorage;
+                settings.StorageType = StorageType.SessionStorage;
                 settings.InteractionType = InteractionType.Popup;
             });
         }
