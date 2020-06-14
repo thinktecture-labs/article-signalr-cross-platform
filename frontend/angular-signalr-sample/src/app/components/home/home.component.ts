@@ -24,9 +24,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (result === 'Tie') {
         this.winner = 'Unentschieden';
       } else if (result === 'Lost') {
-        this.winner = 'Der Gegner hat die Verbindung verloren oder aufgegeben!';
+        this.winner = 'Der Gegner hat die Verbindung verloren!';
       }  else {
-        console.log(result, localStorage.getItem('ownId'));
         this.winner = result === localStorage.getItem('ownId') ? 'Du hast gewonnen!' : 'Du hast leider verloren.';
       }
       this.gameOver$.next(!!result);
