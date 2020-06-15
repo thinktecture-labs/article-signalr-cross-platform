@@ -36,22 +36,5 @@ export class UsersService implements OnDestroy{
       this.users = users ?? [];
       this.users$.next(this.users);
     });
-    this.subscription.add(
-      this.signalRService.userOnline$.subscribe((user: User) => {
-        const currentUserIndex = this.users.findIndex(u => u.name === user.name);
-        if (currentUserIndex < 0) {
-          this.users.push(user);
-          this.users$.next(this.users);
-        }
-      }),
-    );
-    this.subscription.add(this.signalRService.userOffline$.subscribe((user) => {
-        const currentUserIndex = this.users.findIndex(u => u.name === user.name);
-        if (currentUserIndex > -1) {
-          this.users.splice(currentUserIndex, 1);
-          this.users$.next(this.users);
-        }
-      }),
-    );
   }
 }

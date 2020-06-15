@@ -67,8 +67,9 @@ namespace SignalRSample.Api.Services
             if (session != null)
             {
                 Console.WriteLine($"Remove user from Group. Session: {session.SessionId}, User: {clientId}");
-                await _hubContext.Groups.RemoveFromGroupAsync(clientId, session.SessionId);
                 await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver", "Lost");
+                await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo.ConnectionId, session.SessionId);
+                await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne.ConnectionId, session.SessionId);
                 session.Moves = new List<KeyValuePair<string, int>>();
                 session.ActiveUser = String.Empty;
             }

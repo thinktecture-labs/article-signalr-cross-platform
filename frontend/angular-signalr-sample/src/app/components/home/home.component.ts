@@ -5,7 +5,7 @@ import { SignalRService } from '../../services/signal-r.service';
 @Component({
   selector: 'sr-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
@@ -15,7 +15,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   public winner: string;
   public opponent: string;
 
-  constructor(private readonly signalRService: SignalRService) { }
+  constructor(private readonly signalRService: SignalRService) {
+  }
 
   public async ngOnInit(): Promise<void> {
     await this.signalRService.startConnection();
@@ -25,7 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.winner = 'Unentschieden';
       } else if (result === 'Lost') {
         this.winner = 'Der Gegner hat die Verbindung verloren!';
-      }  else {
+      } else {
         this.winner = result === localStorage.getItem('ownId') ? 'Du hast gewonnen!' : 'Du hast leider verloren.';
       }
       this.gameOver$.next(!!result);
