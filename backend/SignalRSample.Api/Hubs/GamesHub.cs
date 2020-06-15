@@ -21,11 +21,6 @@ namespace SignalRSample.Api.Hubs
             _manager = manager;
         }
 
-        public async Task SendNotification(string message)
-        {
-            await Clients.Others.SendAsync("Notifications", message);
-        }
-
         public async Task JoinSession()
         {
             var user = await _usersService.GetUserAsync(Context.ConnectionId);
@@ -41,11 +36,6 @@ namespace SignalRSample.Api.Hubs
             Console.WriteLine(
                 $"PlayRound: User {Context.User.UserName()}; ConnectionId: {Context.ConnectionId} Wert {data}");
             await _manager.PlayRoundAsync(Context.ConnectionId, data);
-        }
-
-        public Task ResetGame()
-        {
-            return Clients.Others.SendAsync("Reset");
         }
 
         public User OwnConnectionId()
