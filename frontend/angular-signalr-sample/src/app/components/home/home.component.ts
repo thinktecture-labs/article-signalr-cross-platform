@@ -27,13 +27,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       } else if (result === 'Lost') {
         this.winner = 'Der Gegner hat die Verbindung verloren!';
       } else {
-        this.winner = result === localStorage.getItem('ownId') ? 'Du hast gewonnen!' : 'Du hast leider verloren.';
+        this.winner = result === this.signalRService.connectionId ? 'Du hast gewonnen!' : 'Du hast leider verloren.';
       }
       this.gameOver$.next(!!result);
     }));
     this.subscription.add(this.signalRService.activeSession$.subscribe(session => {
       if (session != null) {
-        this.opponent = session.userOne.connectionId === localStorage.getItem('ownId')
+        this.opponent = session.userOne.connectionId === this.signalRService.connectionId
           ? session.userTwo.name
           : session.userOne.name;
       } else {

@@ -1,5 +1,5 @@
-<div *ngIf="opponent">
-  <p>Du spielst gegen {{opponent}}</p>
+<div class="opponent" *ngIf="opponent">
+  <span>Du spielst gegen {{opponent}}</span>
 </div>
 <div class="container" *ngIf="!(gameOver$ |async)">
   <sr-board *ngIf="gameRunning$ | async; else waiting"></sr-board>

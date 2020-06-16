@@ -9,6 +9,14 @@ mat-toolbar {
     align-items: flex-end;
     padding-bottom: 18px;
   }
+
+  sr-icon {
+    opacity: .6;
+    &.connected {
+      opacity: 1;
+      color: white;
+    }
+  }
 }
 
 .spacer {

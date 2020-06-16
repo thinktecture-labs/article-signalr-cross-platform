@@ -1,7 +1,7 @@
 <mat-toolbar color="primary" [class.mobile]="isMobileDevice" [class.tablet]="isTabletDevice">
   <div class="sr-tt-logo"></div>
   <span class="spacer"></span>
-  <sr-icon name="plug" [disabled]="!connectionState"></sr-icon>
+  <sr-icon name="plug" [class.connected]="connectionState === states.Connected"></sr-icon>
 </mat-toolbar>
 <router-outlet></router-outlet>
 <sr-notifications></sr-notifications>

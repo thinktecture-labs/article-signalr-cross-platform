@@ -4,7 +4,6 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { GameSession } from '../models/game-session';
-import { User } from '../models/user';
 import { NotificationService } from './notification.service';
 
 @Injectable({
@@ -16,7 +15,6 @@ export class SignalRService {
   public gameRunning$ = new BehaviorSubject<boolean>(false);
   public gameOver$ = new BehaviorSubject<string>('');
   public activeSession$ = new BehaviorSubject<GameSession>(null);
-  public ownUser$ = new Subject<User>();
 
   constructor(
     private readonly oAuthService: OAuthService,
@@ -26,6 +24,10 @@ export class SignalRService {
 
   public get state() {
     return this.hubConnection?.state;
+  }
+
+  public get connectionId() {
+    return this.hubConnection?.connectionId;
   }
 
   public async startConnection(): Promise<void> {
@@ -42,9 +44,6 @@ export class SignalRService {
       .build();
     await this.hubConnection.start();
     this.notificationService.showNotification('Erfolgreich am Hub angemeldet!');
-    const user = await this.hubConnection.invoke('OwnConnectionId');
-    localStorage.setItem('ownId', user.connectionId);
-    this.ownUser$.next(user);
 
     this.addStartGameListener();
     this.addGameOverListener();
@@ -70,7 +69,6 @@ export class SignalRService {
 
   private addStartGameListener(): void {
     this.hubConnection.on('StartGame', (session: GameSession) => {
-      console.log(`Start Game: ${session}`);
       this.gameRunning$.next(true);
       this.activeSession$.next(session);
       this.notificationService.showNotification('Das Spiel beginnt :-)');

@@ -108,9 +108,9 @@ namespace SignalRSample.Api.Services
         {
             winner = String.Empty;
             var firstUser = gameSession.Moves.Where(m => m.Key == gameSession.UserOne.ConnectionId)
-                .Select(m => m.Value);
+                .Select(m => m.Value).ToArray();
             var secondUser = gameSession.Moves.Where(m => m.Key == gameSession.UserTwo.ConnectionId)
-                .Select(m => m.Value);
+                .Select(m => m.Value).ToArray();
 
             var gameOver = false;
             foreach (var line in WinningOptions)
@@ -118,28 +118,25 @@ namespace SignalRSample.Api.Services
                 if (line.Intersect(firstUser).Count() == line.Count())
                 {
                     gameOver = true;
-                    winner = gameSession.UserTwo.ConnectionId;
+                    winner = gameSession.UserOne.ConnectionId;
                 }
                 else if (line.Intersect(secondUser).Count() == line.Count())
                 {
                     gameOver = true;
-                    winner = gameSession.UserOne.ConnectionId;
+                    winner = gameSession.UserTwo.ConnectionId;
                 }
             }
 
-            if (gameOver)
+            if (!gameOver)
             {
-                return gameOver;
+                var occupy = firstUser.Count() + secondUser.Count();
+                if (occupy == 9)
+                {
+                    gameOver = true;
+                    winner = "Tie";
+                }
             }
 
-            var occupy = firstUser.Count() + secondUser.Count();
-            if (occupy != 9)
-            {
-                return gameOver;
-            }
-
-            gameOver = true;
-            winner = "Tie";
 
             return gameOver;
         }

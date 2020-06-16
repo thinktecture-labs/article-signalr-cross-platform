@@ -19,7 +19,7 @@
     },
     "SignalRSample.Api": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "users",
       "applicationUrl": "http://localhost:5002",
       "environmentVariables": {

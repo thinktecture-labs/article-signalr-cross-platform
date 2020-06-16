@@ -34,7 +34,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.signalRService.activeSession$.subscribe(session => {
         if (session !== null) {
-          this.waitForOther = session.activeUser !== localStorage.getItem('ownId');
+          this.waitForOther = session.activeUser !== this.signalRService.connectionId;
         }
       }),
     );

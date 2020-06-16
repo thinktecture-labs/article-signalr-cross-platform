@@ -38,15 +38,6 @@ namespace SignalRSample.Api.Hubs
             await _manager.PlayRoundAsync(Context.ConnectionId, data);
         }
 
-        public User OwnConnectionId()
-        {
-            return new User
-            {
-                ConnectionId = Context.ConnectionId,
-                Name = Context.User.UserName()
-            };
-        }
-
         public override async Task OnConnectedAsync()
         {
             await _usersService.AddUserAsync(Context.ConnectionId, Context.User.UserName());

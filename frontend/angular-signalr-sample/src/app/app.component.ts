@@ -11,9 +11,13 @@ import { SignalRService } from './services/signal-r.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  public connectionState: HubConnectionState = this.signalRService.state;
+  public states = HubConnectionState;
   public isMobileDevice: boolean;
   public isTabletDevice: boolean;
+
+  public get connectionState(): HubConnectionState {
+    return this.signalRService.state;
+  }
 
   constructor(
     private readonly oauthService: OAuthService,
