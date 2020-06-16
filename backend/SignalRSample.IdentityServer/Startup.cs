@@ -1,20 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using IdentityModel;
-using IdentityServer4;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
 using SignalRSample.IdentityServer.Data;
 using SignalRSample.IdentityServer.Models;
+using SignalRSample.IdentityServer.ViewModels;
 
 namespace SignalRSample.IdentityServer
 {
@@ -32,7 +25,7 @@ namespace SignalRSample.IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<DatabaseInitializer>();
-            
+
             services.AddCors(options =>
             {
                 // this defines a CORS policy called "default"
@@ -88,7 +81,8 @@ namespace SignalRSample.IdentityServer
 
                     // this enables automatic token cleanup. this is optional.
                     options.EnableTokenCleanup = true;
-                });
+                })
+                .AddTestUsers(TestUsers.Users);
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
