@@ -1,5 +1,7 @@
 # Cross-platform SignalR demo
 
+[Slides](https://speakerdeck.com/patrickjahr/asp-dot-net-signalr-core-cross-platform-realtime-push)
+
 ## Initial Setup
 
 ### Angular Frontend
@@ -25,3 +27,13 @@
 #### API
 * Switch into folder `SignalRSample.Api`
 * run `dotnet run` to start the web server with the address `http://localhost:5002`
+
+
+## Sample IdentityServer
+
+If you want to play, you can login in with the following users:
+* UserName: Bob; Password bob
+* UserName: Alice; Password alice
+* UserName: Tom; Password tom
+* UserName: John; Password john
+
