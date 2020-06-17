@@ -1,9 +1,11 @@
 using System;
 using System.Reactive.Subjects;
+using System.Text.Json;
 using System.Threading.Tasks;
 using BlazorSignalRSample.Client.Models;
 using MatBlazor;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Configuration;
 using Sotsera.Blazor.Oidc;
 
 namespace BlazorSignalRSample.Client.Services
@@ -13,6 +15,7 @@ namespace BlazorSignalRSample.Client.Services
         private HubConnection _hubConnection;
         private IMatToaster _toaster;
         private IUserManager _manager;
+        private IConfiguration _configuration;
 
         public event EventHandler<GameRunningEventArgs> GameRunning;
         public event EventHandler<GameOverEventArgs> GameOver;
@@ -22,10 +25,11 @@ namespace BlazorSignalRSample.Client.Services
         public bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
         public string ConnectionId => _hubConnection.ConnectionId;
 
-        public SignalRService(IUserManager manager, IMatToaster toaster)
+        public SignalRService(IUserManager manager, IMatToaster toaster, IConfiguration configuartion)
         {
             _manager = manager ?? throw new ArgumentNullException();
             _toaster = toaster ?? throw new ArgumentNullException();
+            _configuration = configuartion ?? throw new ArgumentNullException();
         }
 
         public async Task InitConnectionAsync()
@@ -34,11 +38,10 @@ namespace BlazorSignalRSample.Client.Services
                 return;
             }
             var accessToken = _manager.UserState.AccessToken;
+            var apiBaseUrl = _configuration["api:baseUrl"];
+            Console.WriteLine(JsonSerializer.Serialize(_configuration));
             _hubConnection = new HubConnectionBuilder()
-                // REVIEW: Wäre es generell nicht sinnvoller, solche URLs in eine Config auszulagern? Gleiches gilt auch für den Server, sodass man über eine 
-                // Umgebungsvariable bestimmen kann, wo man den IdSrv findet. 
-                // Falls Du das Ding mal kurzfristig wo anders hosten musst, für eine andere Demo oder ähnliches, musst du nur die Umgebungsvariable ändern und nicht den Code neu bauen.
-                .WithUrl($"https://pj-tt-signalr.azurewebsites.net/tictactoe?access_token={accessToken}", options =>
+                .WithUrl($"{apiBaseUrl}tictactoe?access_token={accessToken}", options =>
                 { 
                     options.AccessTokenProvider = () => Task.FromResult(accessToken);
                 })

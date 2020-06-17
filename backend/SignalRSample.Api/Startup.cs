@@ -50,9 +50,7 @@ namespace SignalRSample.Api
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddJwtBearer("Bearer", options =>
                 {
-                    // TODO: Add to config
-                    options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
-                    // options.Authority = "http://localhost:5000";
+                    options.Authority = Configuration["api:identityServerUrl"];
                     options.RequireHttpsMetadata = false;
                     options.Audience = "signalr-api";
                     options.Events = new JwtBearerEvents
@@ -79,9 +77,7 @@ namespace SignalRSample.Api
                 })
                 .AddIdentityServerAuthentication("token", options =>
                 {
-                    // TODO: Add to config
-                    options.Authority = "https://pj-tt-idsrv.azurewebsites.net/";
-                    // options.Authority = "http://localhost:5000";
+                    options.Authority = Configuration["api:identityServerUrl"];
                     options.RequireHttpsMetadata = false;
 
                     options.ApiName = "signalr-api";

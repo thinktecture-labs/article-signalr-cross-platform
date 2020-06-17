@@ -1,35 +1,5 @@
 @inject BlazorSignalRSample.Client.Services.SignalRService _signalRService
 
-<div>
-    @(_opponent)
-</div>
-<div class="container">
-    @if (_cells.Length > 0)
-    {
-        @if (_gameRunning) 
-        {
-            <div>
-                <div class="clearfix">
-                    <div class="@CellCssClass(_cells[0])" @onclick="@(async (e) => await PlayRound(0))">@(_cells[0])</div>
-                    <div class="@CellCssClass(_cells[1])" @onclick="@(async (e) => await PlayRound(1))">@(_cells[1])</div>
-                    <div class="@CellCssClass(_cells[2])" @onclick="@(async (e) => await PlayRound(2))">@(_cells[2])</div>
-                </div>
-                <div class="clearfix">
-                    <div class="@CellCssClass(_cells[3])" @onclick="@(async (e) => await PlayRound(3))">@(_cells[3])</div>
-                    <div class="@CellCssClass(_cells[4])" @onclick="@(async (e) => await PlayRound(4))">@(_cells[4])</div>
-                    <div class="@CellCssClass(_cells[5])" @onclick="@(async (e) => await PlayRound(5))">@(_cells[5])</div>
-                </div>
-                <div class="clearfix">
-                    <div class="@CellCssClass(_cells[6])" @onclick="@(async (e) => await PlayRound(6))">@(_cells[6])</div>
-                    <div class="@CellCssClass(_cells[7])" @onclick="@(async (e) => await PlayRound(7))">@(_cells[7])</div>
-                    <div class="@CellCssClass(_cells[8])" @onclick="@(async (e) => await PlayRound(8))">@(_cells[8])</div>
-                </div>
-            </div>
-        } else if (!_gameOver) {
-            <p>Waiting for a user</p>
-        }
-    }
-</div>
 
 @if (_gameOver)
 {
@@ -40,6 +10,45 @@
         <MatButton Raised="true" @onclick="@(async (e) => await ResetGame())">Reset Game</MatButton>
     </div>
 }
+else
+{
+    @if(!String.IsNullOrWhiteSpace(_opponent)) 
+    {
+        <div class="opponent">
+            Du spielst gegen @(_opponent)
+        </div>
+    }
+    <div class="container">
+        @if (_cells.Length > 0)
+        {
+            @if (_gameRunning) 
+            {
+                <div>
+                    <div class="clearfix">
+                        <div class="@CellCssClass(_cells[0])" @onclick="@(async (e) => await PlayRound(0))">@(_cells[0])</div>
+                        <div class="@CellCssClass(_cells[1])" @onclick="@(async (e) => await PlayRound(1))">@(_cells[1])</div>
+                        <div class="@CellCssClass(_cells[2])" @onclick="@(async (e) => await PlayRound(2))">@(_cells[2])</div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="@CellCssClass(_cells[3])" @onclick="@(async (e) => await PlayRound(3))">@(_cells[3])</div>
+                        <div class="@CellCssClass(_cells[4])" @onclick="@(async (e) => await PlayRound(4))">@(_cells[4])</div>
+                        <div class="@CellCssClass(_cells[5])" @onclick="@(async (e) => await PlayRound(5))">@(_cells[5])</div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="@CellCssClass(_cells[6])" @onclick="@(async (e) => await PlayRound(6))">@(_cells[6])</div>
+                        <div class="@CellCssClass(_cells[7])" @onclick="@(async (e) => await PlayRound(7))">@(_cells[7])</div>
+                        <div class="@CellCssClass(_cells[8])" @onclick="@(async (e) => await PlayRound(8))">@(_cells[8])</div>
+                    </div>
+                </div>
+            } else if (!_gameOver) {
+                <p>Waiting for a user</p>
+            }
+        }
+    </div>
+}
+
+
+
 
 @code {
     private string[] _cells = new string[] { };
@@ -110,6 +119,11 @@
         }
         _gameOver = !String.IsNullOrWhiteSpace(data.WinnerId);
         
+        if (_gameOver) 
+        {
+            _opponent = String.Empty;
+        }
+        
         StateHasChanged();
     }
 
@@ -118,9 +132,9 @@
         Console.WriteLine($"Start Game: {data.Session}");
         if (data.Session != null) {
             _waitForOtherUser = data.Session.ActiveUser != _signalRService.ConnectionId;
-            _opponent = data.Session.UserOne.connectionId != _signalRService.ConnectionId 
-                ? data.Session.UserOne.name 
-                : data.Session.UserTwo.name;
+            _opponent = data.Session.UserOne.ConnectionId != _signalRService.ConnectionId 
+                ? data.Session.UserOne.Name 
+                : data.Session.UserTwo.Name;
             _gameOver = false;
         }
         StateHasChanged();

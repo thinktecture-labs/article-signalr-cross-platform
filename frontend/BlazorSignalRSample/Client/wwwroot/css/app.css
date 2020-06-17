@@ -63,6 +63,11 @@
     }
 
 
+.opponent {
+    padding-top: 12px;
+    padding-left: 16px;
+}
+
 .overlay {
     position: absolute;
     top: 64px;

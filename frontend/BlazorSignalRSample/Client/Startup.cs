@@ -6,12 +6,13 @@ using Microsoft.Extensions.Logging;
 using Sotsera.Blazor.Oidc;
 using Sotsera.Blazor.Oidc.Configuration.Model;
 using MatBlazor;
+using Microsoft.Extensions.Configuration;
 
 namespace BlazorSignalRSample.Client
 {
     public static class Startup
     {
-        public static void PopulateServices(IServiceCollection services)
+        public static void PopulateServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<HttpClient>();
             services.AddScoped<SignalRService>();
@@ -26,7 +27,8 @@ namespace BlazorSignalRSample.Client
                 config.VisibleStateDuration = 3000;
             });
            
-            services.AddOidc(new Uri("https://pj-tt-idsrv.azurewebsites.net"), (settings, siteUri) =>
+           var idSrvUrl = configuration["api:identityServerUrl"];
+            services.AddOidc(new Uri($"{idSrvUrl}"), (settings, siteUri) =>
             {
                 settings.UseDefaultCallbackUris(siteUri);
                 settings.ClientId = "blazor-spa";

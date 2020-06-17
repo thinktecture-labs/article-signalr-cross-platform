@@ -9,7 +9,8 @@ namespace BlazorSignalRSample.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
-            Startup.PopulateServices(builder.Services);
+            
+            Startup.PopulateServices(builder.Services, builder.Configuration);
             var host = builder.Build();
             await host.RunAsync();
         }
