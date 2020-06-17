@@ -15,7 +15,7 @@ export class NotificationService {
     this.items$ = of(this.notifications);
   }
 
-  public showNotification(title: string, duration: number = 1000): void {
+  public showNotification(title: string, duration: number = 2000): void {
     const toast = {
       title,
     } as Toast;
