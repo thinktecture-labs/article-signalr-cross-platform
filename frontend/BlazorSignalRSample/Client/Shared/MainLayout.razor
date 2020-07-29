@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject Sotsera.Blazor.Oidc.IUserManager UserManager
 
 <MatAppBarContainer>
     <MatAppBar Fixed="true">
@@ -13,11 +12,7 @@
             </MatAppBarSection>
         </MatAppBarRow>
     </MatAppBar>
- 
     <MatAppBarContent>
-        @if (!String.IsNullOrWhiteSpace(UserManager?.UserState?.AccessToken))
-        {
-            @Body                
-        }
+        @Body
     </MatAppBarContent>
 </MatAppBarContainer>

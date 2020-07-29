@@ -4,9 +4,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BlazorSignalRSample.Client.Models;
 using MatBlazor;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
-using Sotsera.Blazor.Oidc;
 
 namespace BlazorSignalRSample.Client.Services
 {
@@ -14,8 +15,8 @@ namespace BlazorSignalRSample.Client.Services
     {
         private HubConnection _hubConnection;
         private IMatToaster _toaster;
-        private IUserManager _manager;
         private IConfiguration _configuration;
+        private IAccessTokenProvider _tokenProvider;
 
         public event EventHandler<GameRunningEventArgs> GameRunning;
         public event EventHandler<GameOverEventArgs> GameOver;
@@ -25,11 +26,11 @@ namespace BlazorSignalRSample.Client.Services
         public bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
         public string ConnectionId => _hubConnection.ConnectionId;
 
-        public SignalRService(IUserManager manager, IMatToaster toaster, IConfiguration configuartion)
+        public SignalRService(IMatToaster toaster, IConfiguration configuartion, IAccessTokenProvider tokenProvider)
         {
-            _manager = manager ?? throw new ArgumentNullException();
             _toaster = toaster ?? throw new ArgumentNullException();
             _configuration = configuartion ?? throw new ArgumentNullException();
+            _tokenProvider = tokenProvider;
         }
 
         public async Task InitConnectionAsync()
@@ -37,43 +38,43 @@ namespace BlazorSignalRSample.Client.Services
             if (IsConnected) {
                 return;
             }
-            var accessToken = _manager.UserState.AccessToken;
-            var apiBaseUrl = _configuration["api:baseUrl"];
-            Console.WriteLine(JsonSerializer.Serialize(_configuration));
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl($"{apiBaseUrl}tictactoe?access_token={accessToken}", options =>
-                { 
-                    options.AccessTokenProvider = () => Task.FromResult(accessToken);
-                })
-                .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10) })
-                .Build();
-
-
             
+            var accessTokenState = await _tokenProvider.RequestAccessToken();
+            if (accessTokenState.TryGetToken(out var accessToken)) {
+                var apiBaseUrl = _configuration["api:baseUrl"];
+                var accessTokenString = accessToken.Value;
+                _hubConnection = new HubConnectionBuilder()
+                    .WithUrl($"{apiBaseUrl}tictactoe?access_token={accessTokenString}", options =>
+                    { 
+                        options.AccessTokenProvider = () => Task.FromResult(accessTokenString);
+                    })
+                    .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10) })
+                    .Build();
 
-            // NEW ARCHITECTURE
-            _hubConnection.On("StartGame", (GameSession data) =>
-            {
-                GameRunning?.Invoke(this, new GameRunningEventArgs { Running = true });
-                ActiveSession?.Invoke(this, new ActiveSessionEventArgs { Session = data });
-            });
 
-            _hubConnection.On("GameOver", (string data) =>
-            {
-                GameRunning?.Invoke(this, new GameRunningEventArgs { Running = false });
-                ActiveSession?.Invoke(this, new ActiveSessionEventArgs { Session = null });
-                GameOver?.Invoke(this, new GameOverEventArgs { WinnerId = data});
-            });
+                _hubConnection.On("StartGame", (GameSession data) =>
+                {
+                    GameRunning?.Invoke(this, new GameRunningEventArgs { Running = true });
+                    ActiveSession?.Invoke(this, new ActiveSessionEventArgs { Session = data });
+                });
 
-            _hubConnection.On<int>("Play", (data) =>
-            {
-                Console.WriteLine($"Round Played. Data is {data}");
-                RoundPlayed?.Invoke(this, new GameEventArgs() { Value = data });
-            });
+                _hubConnection.On("GameOver", (string data) =>
+                {
+                    GameRunning?.Invoke(this, new GameRunningEventArgs { Running = false });
+                    ActiveSession?.Invoke(this, new ActiveSessionEventArgs { Session = null });
+                    GameOver?.Invoke(this, new GameOverEventArgs { WinnerId = data});
+                });
 
-            await _hubConnection.StartAsync();
-            _toaster.Add("Erfolgreich am Hub angemeldet!", MatToastType.Success);
-            await JoinNewSession();
+                _hubConnection.On<int>("Play", (data) =>
+                {
+                    Console.WriteLine($"Round Played. Data is {data}");
+                    RoundPlayed?.Invoke(this, new GameEventArgs() { Value = data });
+                });
+
+                await _hubConnection.StartAsync();
+                _toaster.Add("Erfolgreich am Hub angemeldet!", MatToastType.Success);
+                await JoinNewSession();
+            }
         }
 
         public async Task JoinNewSession() {

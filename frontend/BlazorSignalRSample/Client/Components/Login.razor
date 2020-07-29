@@ -1,23 +1,26 @@
-﻿@inject Sotsera.Blazor.Oidc.IUserManager UserManager
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
 
 <AuthorizeView>
     <Authorized>
-        <span class="login-display-name mr-3">
-            @UserManager.User.Name, @UserManager.UserState.ExpiresAt
+        <span>
+            @context.User.Identity.Name
         </span>
-        <MatIconButton Icon="exit_to_app" OnClick="@LogoutRedirect"></MatIconButton>
+        <MatIconButton Icon="exit_to_app" OnClick="@BeginSignOut"></MatIconButton>
     </Authorized>
+    <NotAuthorized>
+        <a href="authentication/login">Log in</a>
+    </NotAuthorized>
 </AuthorizeView>
 
-@code {
-
-    protected async override Task OnInitializedAsync() 
+@code{
+    private async Task BeginSignOut(MouseEventArgs args)
     {
-        if (String.IsNullOrWhiteSpace(UserManager.UserState?.AccessToken)) 
-        {
-            await UserManager.BeginAuthenticationAsync();
-        }
+        await SignOutManager.SetSignOutState();
 
+        Navigation.NavigateTo("authentication/logout");
     }
-    public async void LogoutRedirect() => await UserManager.BeginLogoutAsync(p => p.WithRedirect());
 }

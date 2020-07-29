@@ -13,8 +13,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0-preview5.20216.8" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.0-preview5.20216.8" PrivateAssets="all" />
     <PackageReference Include="System.Net.Http.Json" Version="3.2.0-preview5.20210.3" />
-    <PackageReference Include="Sotsera.Blazor.Oidc" Version="1.0.0-alpha-8" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="3.2.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -100,6 +100,7 @@ namespace SignalRSample.IdentityServer
                     ClientName = "Blazor SPA",
                     AllowedGrantTypes = GrantTypes.Code,
                     AllowOfflineAccess = true,
+                    RequireClientSecret = false,
                     ClientSecrets =
                     {
                         new Secret("blazor-spa-secret".Sha256())
@@ -115,9 +116,7 @@ namespace SignalRSample.IdentityServer
                     RedirectUris =
                     {
                         "https://localhost:6001/oidc/callbacks/authentication-redirect",
-                        "https://localhost:6001/_content/Sotsera.Blazor.Oidc/authentication-popup.html",
-                        "http://localhost:52310/oidc/callbacks/authentication-redirect",
-                        "http://localhost:52310/_content/Sotsera.Blazor.Oidc/authentication-popup.html"
+                        "https://localhost:6001/authentication/login-callback",
                     },
                     PostLogoutRedirectUris =
                     {

@@ -1,15 +1,15 @@
 :host {
   cursor: pointer;
   user-select: none;
-  width: 62px;
-  height: 62px;
+  width: 180px;
+  height: 180px;
   background-color: white;
   float: left;
   color: black;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 62px;
+  font-size: 180px;
   touch-action: manipulation;
 
   &.middle {
