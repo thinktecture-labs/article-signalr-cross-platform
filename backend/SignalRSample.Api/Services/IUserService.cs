@@ -11,5 +11,6 @@ namespace SignalRSample.Api.Services
         Task AddUserAsync(string connectionId, string userName);
         Task RemoveUserAsync(string connectionId);
         Task<User> GetUserAsync(string clientId);
+        Task<User> GetUserByNameAsync(string name);
     }
 }

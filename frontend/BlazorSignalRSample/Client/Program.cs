@@ -1,11 +1,13 @@
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using MatBlazor;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using BlazorSignalRSample.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
-using BlazorSignalRSample.Client.Services;
+
 
 namespace BlazorSignalRSample.Client
 {
@@ -15,7 +17,12 @@ namespace BlazorSignalRSample.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
-            builder.Services.AddTransient<HttpClient>();
+            builder.Services.AddHttpClient("ConfTool.ServerAPI", client => 
+                client.BaseAddress = new Uri("http://localhost:5002/"))
+                    .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
+            builder.Services.AddScoped(services => services.GetRequiredService<IHttpClientFactory>().CreateClient("ConfTool.ServerAPI"));
+
             builder.Services.AddScoped<SignalRService>();
 
             builder.Services.AddMatToaster(config =>

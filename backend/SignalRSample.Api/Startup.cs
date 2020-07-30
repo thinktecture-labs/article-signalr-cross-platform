@@ -29,9 +29,10 @@ namespace SignalRSample.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<UserDbContext>(
-                options => options.UseInMemoryDatabase("Users"));
-            services.AddSingleton<GameSessionManager>();
+            services.AddDbContext<GamesDbContext>(
+                options => options.UseInMemoryDatabase("TicTacToe"));
+            services.AddScoped<GameSessionManager>();
+            services.AddScoped<GamesHistoryService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddControllers();
             services.AddCors(options =>

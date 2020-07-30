@@ -1,9 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using SignalRSample.Api.Database;
 using SignalRSample.Api.Hubs;
 using SignalRSample.Api.Models;
 
@@ -24,16 +25,25 @@ namespace SignalRSample.Api.Services
         };
 
         private readonly IHubContext<GamesHub> _hubContext;
-        private readonly List<GameSession> _sessions = new List<GameSession>();
+        private readonly GamesDbContext _context;
+        private readonly GamesHistoryService _historyService;
 
-        public GameSessionManager(IHubContext<GamesHub> hubContext)
+        public GameSessionManager(IHubContext<GamesHub> hubContext, GamesDbContext context,
+            GamesHistoryService historyService)
         {
             _hubContext = hubContext;
+            _context = context;
+            _historyService = historyService;
         }
 
+        // TODO: Split in two Methods
         public async Task AddUserAsync(User client)
         {
-            var session = _sessions.FirstOrDefault(s => s.UserTwo == null && s.UserOne != null);
+            // await using var tx = await _context.Database.BeginTransactionAsync();
+            var session = await _context.Sessions
+                .Include(s => s.UserOne)
+                .Include(s => s.UserTwo)
+                .FirstOrDefaultAsync(s => s.UserTwo == null && s.UserOne != null);
             if (session != null)
             {
                 Console.WriteLine(
@@ -45,11 +55,14 @@ namespace SignalRSample.Api.Services
             {
                 session = new GameSession
                 {
-                    SessionId = $"Game{_sessions.Count}",
+                    SessionId = $"Game{_context.Sessions.Count()}",
                     UserOne = client
                 };
-                _sessions.Add(session);
+                await _context.Sessions.AddAsync(session);
             }
+
+            await _context.SaveChangesAsync();
+            // await tx.CommitAsync();
 
             await _hubContext.Groups.AddToGroupAsync(client.ConnectionId, session.SessionId);
             if (!String.IsNullOrWhiteSpace(session.ActiveUser))
@@ -62,33 +75,42 @@ namespace SignalRSample.Api.Services
 
         public async Task RemoveUserAsync(string clientId)
         {
-            var session = _sessions.FirstOrDefault(s =>
-                s.UserOne?.ConnectionId == clientId || s.UserTwo?.ConnectionId == clientId);
+            // await using var tx = await _context.Database.BeginTransactionAsync();
+            var session = await _context.Sessions.FirstOrDefaultAsync(s =>
+                s.UserOne.ConnectionId == clientId || s.UserTwo.ConnectionId == clientId);
             if (session != null)
             {
                 Console.WriteLine($"Remove user from Group. Session: {session.SessionId}, User: {clientId}");
                 await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver", "Lost");
                 await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo.ConnectionId, session.SessionId);
                 await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne.ConnectionId, session.SessionId);
-                session.Moves = new List<KeyValuePair<string, int>>();
-                session.ActiveUser = String.Empty;
+                _context.Sessions.Remove(session);
+                await _context.SaveChangesAsync();
             }
+
+            // await tx.CommitAsync();
         }
 
         public async Task PlayRoundAsync(string clientId, int value)
         {
-            var session = _sessions.FirstOrDefault(s =>
-                (s.UserOne?.ConnectionId == clientId || s.UserTwo?.ConnectionId == clientId) &&
-                s.ActiveUser == clientId);
+            // await using var tx = await _context.Database.BeginTransactionAsync();
+            var session = await _context.Sessions
+                .Include(s => s.UserOne)
+                .Include(s => s.UserTwo)
+                .Include(s => s.Moves)
+                .FirstOrDefaultAsync(s =>
+                    (s.UserOne.ConnectionId == clientId || s.UserTwo.ConnectionId == clientId) &&
+                    s.ActiveUser == clientId);
             if (session != null)
             {
-                session?.Moves.Add(new KeyValuePair<string, int>(clientId, value));
+                session?.Moves.Add(new GameSessionMove {SessionId = session.Id, ClientId = clientId, Move = value});
                 if (CheckSessionState(session, out var winner))
                 {
                     await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver", winner);
                     await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne.ConnectionId, session.SessionId);
                     await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo.ConnectionId, session.SessionId);
-                    _sessions.Remove(session);
+                    await _historyService.AddGameAsync(session, winner);
+                    _context.Sessions.Remove(session);
                 }
                 else
                 {
@@ -97,20 +119,24 @@ namespace SignalRSample.Api.Services
                         : session.UserOne.ConnectionId;
                     await _hubContext.Clients.GroupExcept(session.SessionId, clientId).SendAsync("Play", value);
                 }
+
+                await _context.SaveChangesAsync();
             }
             else
             {
                 await _hubContext.Clients.User(clientId).SendAsync("NotAllowed");
             }
+
+            // await tx.CommitAsync();
         }
 
         private bool CheckSessionState(GameSession gameSession, out string winner)
         {
             winner = String.Empty;
-            var firstUser = gameSession.Moves.Where(m => m.Key == gameSession.UserOne.ConnectionId)
-                .Select(m => m.Value).ToArray();
-            var secondUser = gameSession.Moves.Where(m => m.Key == gameSession.UserTwo.ConnectionId)
-                .Select(m => m.Value).ToArray();
+            var firstUser = gameSession.Moves.Where(m => m.ClientId == gameSession.UserOne.ConnectionId)
+                .Select(m => m.Move).ToArray();
+            var secondUser = gameSession.Moves.Where(m => m.ClientId == gameSession.UserTwo.ConnectionId)
+                .Select(m => m.Move).ToArray();
 
             var gameOver = false;
             foreach (var line in WinningOptions)

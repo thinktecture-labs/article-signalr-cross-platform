@@ -1,8 +1,34 @@
 ﻿@page "/"
 @using BlazorSignalRSample.Client.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
 @inject SignalRService _signalRService
+@inject AuthenticationStateProvider _authenticationStateProvider
 
-<TicTacToe></TicTacToe>
-
+<div style="display: flex;">
+    @if(isLoggedIn) 
+    {
+        <div>
+            <History></History>
+        </div>
+    }
+    <div style="flex: 1;">
+        <TicTacToe></TicTacToe>
+    </div>
+</div>
 @code {
+    private bool isLoggedIn = false;
+    protected override async Task OnInitializedAsync()
+    {
+        _authenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        isLoggedIn = authState.User.Identity.IsAuthenticated;
+    }
+
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+    {
+        var authState = task.Result;
+        isLoggedIn = authState.User.Identity.IsAuthenticated;
+    }
 }

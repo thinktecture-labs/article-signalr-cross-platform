@@ -11,9 +11,9 @@ namespace SignalRSample.Api.Services
 {
     public class UsersService : IUsersService
     {
-        private readonly UserDbContext _context;
+        private readonly GamesDbContext _context;
 
-        public UsersService(UserDbContext context)
+        public UsersService(GamesDbContext context)
         {
             _context = context;
         }
@@ -26,6 +26,11 @@ namespace SignalRSample.Api.Services
         public Task<User> GetUserAsync(string clientId)
         {
             return _context.Users.FirstOrDefaultAsync(u => u.ConnectionId == clientId);
+        }
+        
+        public Task<User> GetUserByNameAsync(string name)
+        {
+            return _context.Users.FirstOrDefaultAsync(u => u.Name == name);
         }
 
         public async Task AddUserAsync(string connectionId, string userName)

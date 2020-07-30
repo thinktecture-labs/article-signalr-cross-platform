@@ -1,0 +1,22 @@
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@using System.Text.Json;
+
+@inject HttpClient httpClient
+@inject IAccessTokenProvider accessTokenProvider
+
+@if (history?.Length > 0) {
+    for (int i = 0; i < history.Length; i++)
+    {
+        <p>@history[i].Opponent: @history[i].GameResult</p>
+    }
+}
+
+@code{
+    private GameHistory[] history;
+    protected override async Task OnInitializedAsync() 
+    {
+        history = await httpClient.GetFromJsonAsync<GameHistory[]>("GamesHistory");
+        Console.WriteLine(JsonSerializer.Serialize(history));
+    }
+}
