@@ -3,11 +3,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using MatBlazor;
 using BlazorSignalRSample.Client.Services;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 
 namespace BlazorSignalRSample.Client
 {
@@ -17,11 +15,14 @@ namespace BlazorSignalRSample.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
-            builder.Services.AddHttpClient("ConfTool.ServerAPI", client => 
-                client.BaseAddress = new Uri("http://localhost:5002/"))
-                    .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+            builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
+            builder.Services
+                    .AddHttpClient("Blazor.ServerAPI", client => client.BaseAddress = new Uri("http://localhost:5002"))
+                    .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 
-            builder.Services.AddScoped(services => services.GetRequiredService<IHttpClientFactory>().CreateClient("ConfTool.ServerAPI"));
+            builder.Services
+                    .AddScoped(services => services.GetRequiredService<IHttpClientFactory>()
+                    .CreateClient("Blazor.ServerAPI"));
 
             builder.Services.AddScoped<SignalRService>();
 

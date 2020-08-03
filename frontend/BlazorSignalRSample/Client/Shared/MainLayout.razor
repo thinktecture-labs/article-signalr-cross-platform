@@ -1,18 +1,37 @@
 ﻿@inherits LayoutComponentBase
 
-<MatAppBarContainer>
-    <MatAppBar Fixed="true">
-        <MatAppBarRow>
-            <MatAppBarSection>
-                <div class="sr-tt-logo">
-                </div>
-            </MatAppBarSection>
-            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                <Login />
-            </MatAppBarSection>
-        </MatAppBarRow>
-    </MatAppBar>
-    <MatAppBarContent>
-        @Body
-    </MatAppBarContent>
-</MatAppBarContainer>
+<MatAppBar Style="z-index: 100;" Class="mat" Fixed="true">
+    <MatAppBarRow>
+        <MatAppBarSection>
+            <div class="sr-tt-logo">
+            </div>
+        </MatAppBarSection>
+        <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+            <MatIconButton Icon="update" OnClick="@((e) => MenuButtonClicked())"></MatIconButton>
+            <Login />
+        </MatAppBarSection>
+    </MatAppBarRow>
+</MatAppBar>
+
+<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="mat">
+    <MatDrawer @bind-Opened="@_navMenuOpened" Mode="@MatDrawerMode.Modal">
+        <MatAppBarAdjust></MatAppBarAdjust>
+        <History></History>
+    </MatDrawer>
+    <MatDrawerContent Class="mdc-theme--background">
+        <MatAppBarAdjust></MatAppBarAdjust>
+        <div class="body-wrapper">
+            @Body
+        </div>
+    </MatDrawerContent>
+</MatDrawerContainer>
+
+@code {
+    bool _navMenuOpened = false;
+
+    void MenuButtonClicked()
+    {
+        _navMenuOpened = !_navMenuOpened;
+        this.StateHasChanged();
+    }
+}

@@ -106,10 +106,10 @@ namespace SignalRSample.Api.Services
                 session?.Moves.Add(new GameSessionMove {SessionId = session.Id, ClientId = clientId, Move = value});
                 if (CheckSessionState(session, out var winner))
                 {
+                    await _historyService.AddGameAsync(session, winner);
                     await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver", winner);
                     await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne.ConnectionId, session.SessionId);
                     await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo.ConnectionId, session.SessionId);
-                    await _historyService.AddGameAsync(session, winner);
                     _context.Sessions.Remove(session);
                 }
                 else

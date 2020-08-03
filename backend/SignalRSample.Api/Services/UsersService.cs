@@ -27,13 +27,18 @@ namespace SignalRSample.Api.Services
         {
             return _context.Users.FirstOrDefaultAsync(u => u.ConnectionId == clientId);
         }
-        
+
         public Task<User> GetUserByNameAsync(string name)
         {
             return _context.Users.FirstOrDefaultAsync(u => u.Name == name);
         }
 
-        public async Task AddUserAsync(string connectionId, string userName)
+        public Task<User> GetUserBySubjectAsync(string subId)
+        {
+            return _context.Users.FirstOrDefaultAsync(u => u.UserSubId == subId);
+        }
+
+        public async Task AddUserAsync(string connectionId, string subId, string userName)
         {
             if (connectionId == null)
             {
@@ -45,6 +50,7 @@ namespace SignalRSample.Api.Services
                 await _context.Users.AddAsync(new User
                 {
                     ConnectionId = connectionId,
+                    UserSubId = subId,
                     Name = String.IsNullOrWhiteSpace(userName) ? connectionId : userName
                 });
                 await _context.SaveChangesAsync();

@@ -40,7 +40,7 @@ namespace SignalRSample.Api.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            await _usersService.AddUserAsync(Context.ConnectionId, Context.User.UserName());
+            await _usersService.AddUserAsync(Context.ConnectionId, Context.User.SubId(), Context.User.UserName());
             await base.OnConnectedAsync();
         }
 

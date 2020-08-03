@@ -11,5 +11,11 @@ namespace SignalRSample.Api.Extensions
             var userNameClaim = user.FindFirst(c => c.Type == JwtClaimTypes.Name);
             return userNameClaim != null ? userNameClaim.Value : String.Empty;
         }
+
+        public static string SubId(this ClaimsPrincipal user)
+        {
+            var userNameClaim = user.FindFirst(c => c.Type == JwtClaimTypes.Subject);
+            return userNameClaim != null ? userNameClaim.Value : String.Empty;
+        }
     }
 }

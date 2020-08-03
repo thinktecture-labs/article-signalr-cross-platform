@@ -1,12 +1,9 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SignalRSample.Api.Extensions;
 using SignalRSample.Api.Services;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SignalRSample.Api.Controllers
 {
@@ -26,11 +23,12 @@ namespace SignalRSample.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> LoadGamesHistoryByUserId(CancellationToken cancellationToken)
         {
-            var user = await _usersService.GetUserByNameAsync(User.UserName());
+            var user = await _usersService.GetUserBySubjectAsync(User.SubId());
             if (user == null)
             {
                 return BadRequest("User does not exists");
             }
+
             var result = await _gamesHistoryService.LoadUserHistoryAsync(user.Id, cancellationToken);
             return Ok(result);
         }
