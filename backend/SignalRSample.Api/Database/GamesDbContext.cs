@@ -15,24 +15,12 @@ namespace SignalRSample.Api.Database
         {
         }
 
-        //TODO: Relationship!
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Game>().HasOne(m => m.UserOne)
                 .WithMany(m => m.UserOneGames).HasForeignKey(m => m.UserOneId);
             modelBuilder.Entity<Game>().HasOne(m => m.UserTwo)
                 .WithMany(m => m.UserTwoGames).HasForeignKey(m => m.UserTwoId);
-
-            /*modelBuilder.Entity<Game>()
-                .HasMany(g => g.Users)
-                .WithOne()
-                .HasForeignKey(nameof(Game.UserOneId))
-                .IsRequired();
-            modelBuilder.Entity<Game>()
-                .HasMany(g => g.Users)
-                .WithOne()
-                .HasForeignKey(nameof(Game.UserTwoId))
-                .IsRequired(false);*/
             base.OnModelCreating(modelBuilder);
         }
     }

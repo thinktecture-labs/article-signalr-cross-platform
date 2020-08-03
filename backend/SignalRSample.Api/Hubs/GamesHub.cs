@@ -21,9 +21,10 @@ namespace SignalRSample.Api.Hubs
             _manager = manager;
         }
 
+        // TODO: Check if the current User is already in a session btw. logged in
         public async Task JoinSession()
         {
-            var user = await _usersService.GetUserAsync(Context.ConnectionId);
+            var user = await _usersService.GetUserBySubjectAsync(Context.User.SubId());
             Console.WriteLine(JsonSerializer.Serialize(user));
             if (user != null)
             {

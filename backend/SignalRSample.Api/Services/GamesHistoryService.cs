@@ -21,18 +21,19 @@ namespace SignalRSample.Api.Services
         public async Task<IEnumerable<GameHistoryEntryDto>> LoadUserHistoryAsync(Guid userId,
             CancellationToken cancellationToken)
         {
-            var games = await _context.Games
+            var games = _context.Games
                 .Include(g => g.UserOne)
-                .Include(g => g.UserTwo)
-                .Where(g => g.UserOne.Id == userId || g.UserTwo.Id == userId)
+                .Include(g => g.UserTwo);
+            var games2 = await games.Where(g => g.UserOne.Id == userId || g.UserTwo.Id == userId)
                 .OrderBy(game => game.SessionDate)
                 .ToListAsync(cancellationToken: cancellationToken);
 
-            return games.Select(game => ConvertGameSessionToHistoryEntryDto(userId, game));
+            return games2.Select(game => ConvertGameSessionToHistoryEntryDto(userId, game));
         }
 
         public async Task AddGameAsync(GameSession session, string winner)
         {
+            Console.WriteLine($"Add new Game to DB {session.UserOne.Name}, {session.UserTwo.Name}, {winner}");
             await _context.Games.AddAsync(new Game
             {
                 Id = Guid.NewGuid(),

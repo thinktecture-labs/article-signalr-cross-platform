@@ -45,7 +45,7 @@ namespace SignalRSample.Api.Services
                 throw new ArgumentNullException(nameof(connectionId));
             }
 
-            if (!_context.Users.Any(u => u.ConnectionId == connectionId))
+            if (!_context.Users.Any(u => u.UserSubId == subId))
             {
                 await _context.Users.AddAsync(new User
                 {

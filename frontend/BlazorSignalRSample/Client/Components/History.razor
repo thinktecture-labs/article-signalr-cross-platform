@@ -1,8 +1,10 @@
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@using BlazorSignalRSample.Client.Services;
 
-@inject HttpClient httpClient
-@inject IAccessTokenProvider accessTokenProvider
+@inject HttpClient _httpClient
+@inject IAccessTokenProvider _accessTokenProvider
+@inject SignalRService _signalRService
 
 @if (history?.Length > 0) {
     <MatListGroup>
@@ -31,6 +33,17 @@
     private GameHistory[] history;
     protected override async Task OnInitializedAsync() 
     {
-        history = await httpClient.GetFromJsonAsync<GameHistory[]>("GamesHistory");
+        history = await _httpClient.GetFromJsonAsync<GameHistory[]>("GamesHistory");
+        _signalRService.GameOver += async (sender, data) => await OnGameOver(sender, data);
+    }
+
+    private async Task OnGameOver(object sender, Services.GameOverEventArgs data) 
+    {
+        Console.WriteLine("Game over is thrown", data.WinnerId);
+        if (data.WinnerId != "Lost") 
+        {
+            history = await _httpClient.GetFromJsonAsync<GameHistory[]>("GamesHistory");
+            StateHasChanged();
+        }
     }
 }
