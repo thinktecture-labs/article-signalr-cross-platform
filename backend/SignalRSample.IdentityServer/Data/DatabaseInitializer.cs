@@ -38,7 +38,7 @@ namespace SignalRSample.IdentityServer.Data
 
             if (!context.IdentityResources.Any())
             {
-                foreach (var resource in Config.GetIdentityResources())
+                foreach (var resource in Config.IdentityResources)
                 {
                     await context.IdentityResources.AddAsync(resource.ToEntity());
                 }

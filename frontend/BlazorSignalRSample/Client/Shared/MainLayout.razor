@@ -9,7 +9,7 @@
         <MatAppBarSection Align="@MatAppBarSectionAlign.End">
             <AuthorizeView>
                 <Authorized>
-                    <MatIconButton Icon="update" OnClick="@((e) => MenuButtonClicked())"></MatIconButton>
+                    <HistoryButton OnHistoryClicked="@((e) => MenuButtonClicked())"></HistoryButton>
                     <Login />
                 </Authorized>
             </AuthorizeView>

@@ -7,26 +7,15 @@ namespace SignalRSample.IdentityServer
 {
     public static class Config
     {
-        public static IEnumerable<IdentityResource> GetIdentityResources()
-        {
-            var customProfile = new IdentityResource(
-                "custom.profile",
-                "Custom profile",
-                new[]
-                {
-                    JwtClaimTypes.Name,
-                    JwtClaimTypes.Subject,
-                    JwtClaimTypes.WebSite,
-                    JwtClaimTypes.Email
-                });
-
-            return new List<IdentityResource>
+        public static IEnumerable<IdentityResource> IdentityResources =>
+            new IdentityResource[]
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile(),
-                customProfile
+
+                // let's include the role claim in the profile
+                new ProfileWithRoleIdentityResource(),
+                new IdentityResources.Email()
             };
-        }
 
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
@@ -39,8 +28,7 @@ namespace SignalRSample.IdentityServer
                     {
                         JwtClaimTypes.Name,
                         JwtClaimTypes.Subject,
-                        JwtClaimTypes.WebSite,
-                        JwtClaimTypes.Email
+                        JwtClaimTypes.Role
                     },
                     Scopes =
                     {
@@ -72,8 +60,7 @@ namespace SignalRSample.IdentityServer
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "signalr-api.full_access",
-                        "custom.profile"
+                        "signalr-api.full_access"
                     },
                     PostLogoutRedirectUris =
                     {
@@ -110,8 +97,7 @@ namespace SignalRSample.IdentityServer
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "signalr-api.full_access",
-                        "custom.profile"
+                        "signalr-api.full_access"
                     },
                     RedirectUris =
                     {
@@ -132,5 +118,18 @@ namespace SignalRSample.IdentityServer
                     AccessTokenLifetime = 3600
                 }
             };
+    }
+
+    public class ProfileWithRoleIdentityResource
+        : IdentityResources.Profile
+    {
+        public ProfileWithRoleIdentityResource()
+        {
+            this.UserClaims.Add(JwtClaimTypes.Name);
+            this.UserClaims.Add(JwtClaimTypes.Subject);
+            this.UserClaims.Add(JwtClaimTypes.WebSite);
+            this.UserClaims.Add(JwtClaimTypes.Email);
+            this.UserClaims.Add(JwtClaimTypes.Role);
+        }
     }
 }

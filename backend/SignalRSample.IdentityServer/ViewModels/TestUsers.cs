@@ -29,7 +29,8 @@ namespace SignalRSample.IdentityServer.ViewModels
                     new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
                     new Claim(JwtClaimTypes.Address,
                         @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }",
-                        IdentityServerConstants.ClaimValueTypes.Json)
+                        IdentityServerConstants.ClaimValueTypes.Json),
+                    new Claim(JwtClaimTypes.Role, "History")
                 }
             },
             new TestUser

@@ -44,6 +44,7 @@ namespace BlazorSignalRSample.Client
             builder.Services.AddOidcAuthentication(options =>
              {
                  builder.Configuration.Bind("Oidc",  options.ProviderOptions);
+                 options.UserOptions.RoleClaim = "role";
              });
             builder.Services.AddApiAuthorization();
             await builder.Build().RunAsync();

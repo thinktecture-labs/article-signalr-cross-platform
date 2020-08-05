@@ -1,0 +1,11 @@
+<AuthorizeView Roles="History">
+    <Authorized>
+        <MatIconButton Icon="update" OnClick="@OnHistoryClicked"></MatIconButton>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnHistoryClicked { get; set; }
+}
