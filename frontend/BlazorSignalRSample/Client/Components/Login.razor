@@ -7,33 +7,12 @@
 
 <AuthorizeView>
     <Authorized>
-        <p>
-            <MatButton Label="@context.User.Identity.Name" OnClick="@OnClick" RefBack="@buttonForwardRef"></MatButton>
-            <MatMenu @ref="Menu"  TargetForwardRef="@buttonForwardRef">
-                <MatList>
-                    <MatListItem>Item 1</MatListItem>
-                    <MatListItem>Item 2</MatListItem>
-                    <MatListItem>Item 3</MatListItem>
-                    <MatListItem>Item 4</MatListItem>
-                    <MatListItem>Item 5</MatListItem>
-                </MatList>
-            </MatMenu>
-        </p>
+        <p>@context.User.Identity.Name</p>
         <MatIconButton Icon="exit_to_app" OnClick="@BeginSignOut"></MatIconButton>
     </Authorized>
-    <NotAuthorized>
-        <a href="authentication/login">Log in</a>
-    </NotAuthorized>
 </AuthorizeView>
 
 @code{
-    ForwardRef buttonForwardRef = new ForwardRef();
-    BaseMatMenu Menu;
-
-    public void OnClick(MouseEventArgs e)
-    {
-        this.Menu.OpenAsync();
-    }
 
     private async Task BeginSignOut(MouseEventArgs args)
     {

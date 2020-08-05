@@ -1,10 +1,8 @@
 using System;
-using System.Reactive.Subjects;
-using System.Text.Json;
 using System.Threading.Tasks;
 using BlazorSignalRSample.Client.Models;
 using MatBlazor;
-using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +15,8 @@ namespace BlazorSignalRSample.Client.Services
         private IMatToaster _toaster;
         private IConfiguration _configuration;
         private IAccessTokenProvider _tokenProvider;
+        private SignOutSessionStateManager _sessionStateManager;
+        private NavigationManager _navigationManager;
 
         public event EventHandler<GameRunningEventArgs> GameRunning;
         public event EventHandler<GameOverEventArgs> GameOver;
@@ -26,11 +26,13 @@ namespace BlazorSignalRSample.Client.Services
         public bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
         public string ConnectionId => _hubConnection.ConnectionId;
 
-        public SignalRService(IMatToaster toaster, IConfiguration configuartion, IAccessTokenProvider tokenProvider)
+        public SignalRService(IMatToaster toaster, IConfiguration configuartion, IAccessTokenProvider tokenProvider, SignOutSessionStateManager sessionStateManager, NavigationManager navigationManager)
         {
             _toaster = toaster ?? throw new ArgumentNullException();
             _configuration = configuartion ?? throw new ArgumentNullException();
             _tokenProvider = tokenProvider;
+            _sessionStateManager = sessionStateManager;
+            _navigationManager = navigationManager;
         }
 
         public async Task InitConnectionAsync()
@@ -71,9 +73,26 @@ namespace BlazorSignalRSample.Client.Services
                     RoundPlayed?.Invoke(this, new GameEventArgs() { Value = data });
                 });
 
-                await _hubConnection.StartAsync();
-                _toaster.Add("Erfolgreich am Hub angemeldet!", MatToastType.Success);
-                await JoinNewSession();
+                _hubConnection.Closed += async (exception) => {
+                    _toaster.Add(exception.Message,MatToastType.Danger);
+                    await _sessionStateManager.SetSignOutState();
+                    _navigationManager.NavigateTo("authentication/logout");
+                };
+
+                try 
+                {
+                    Console.WriteLine("start signalr connection");
+                    await _hubConnection.StartAsync();
+                    
+                    _toaster.Add("Erfolgreich am Hub angemeldet!", MatToastType.Success);
+                    await JoinNewSession();
+                }
+                catch(Exception e) 
+                {
+                    _toaster.Add(
+                        $"Beim Verbinden zum Server ist etwas schief gelaufen. Error: {e.Message}", 
+                        MatToastType.Danger);
+                }
             }
         }
 

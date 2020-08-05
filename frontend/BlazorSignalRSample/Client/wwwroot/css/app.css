@@ -6,6 +6,10 @@
     padding: 0;
 }
 
+.body-wrapper {
+    height: 100%;
+}
+
 .mdc-top-app-bar {
     background-color: #ff584f !important;
     padding: 0 8px;

@@ -2,5 +2,23 @@
 @using BlazorSignalRSample.Client.Services
 
 @inject SignalRService _signalRService
+@inject NavigationManager Navigation
 
-<TicTacToe></TicTacToe>
+<AuthorizeView>
+    <Authorized>
+        <TicTacToe></TicTacToe>
+    </Authorized>
+    <NotAuthorized>
+        <div style="display: flex; justify-content:center; align-items: center; height: 100%;">
+            <MatButton OnClick="@BeginSignIn" Unelevated="true" Style="background-color: #ff584f;">Login</MatButton>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    private void BeginSignIn(MouseEventArgs args)
+    {
+        Navigation.NavigateTo("authentication/login");
+    }
+}

@@ -33,8 +33,12 @@
     private GameHistory[] history;
     protected override async Task OnInitializedAsync() 
     {
-        history = await _httpClient.GetFromJsonAsync<GameHistory[]>("GamesHistory");
-        _signalRService.GameOver += async (sender, data) => await OnGameOver(sender, data);
+        var accessTokenValue = await _accessTokenProvider.RequestAccessToken();
+        if (accessTokenValue.Status == AccessTokenResultStatus.Success) 
+        {
+            history = await _httpClient.GetFromJsonAsync<GameHistory[]>("GamesHistory");
+            _signalRService.GameOver += async (sender, data) => await OnGameOver(sender, data);
+        }
     }
 
     private async Task OnGameOver(object sender, Services.GameOverEventArgs data) 

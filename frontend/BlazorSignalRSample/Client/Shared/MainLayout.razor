@@ -7,8 +7,12 @@
             </div>
         </MatAppBarSection>
         <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-            <MatIconButton Icon="update" OnClick="@((e) => MenuButtonClicked())"></MatIconButton>
-            <Login />
+            <AuthorizeView>
+                <Authorized>
+                    <MatIconButton Icon="update" OnClick="@((e) => MenuButtonClicked())"></MatIconButton>
+                    <Login />
+                </Authorized>
+            </AuthorizeView>
         </MatAppBarSection>
     </MatAppBarRow>
 </MatAppBar>
