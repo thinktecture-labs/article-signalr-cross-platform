@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using SignalRSample.Api.Database;
 using SignalRSample.Api.Hubs;
 using SignalRSample.Api.Services;
@@ -54,6 +55,10 @@ namespace SignalRSample.Api
                     options.Authority = Configuration["api:identityServerUrl"];
                     options.RequireHttpsMetadata = false;
                     options.Audience = "signalr-api";
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        NameClaimType = "name"
+                    };
                     options.Events = new JwtBearerEvents
                     {
                         OnMessageReceived = context =>
@@ -100,7 +105,6 @@ namespace SignalRSample.Api
                         }
                     };
                 });
-
 
             services.AddSignalR();
         }

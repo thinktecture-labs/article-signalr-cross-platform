@@ -40,16 +40,30 @@ namespace SignalRSample.Api.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            await _usersService.AddUserAsync(Context.ConnectionId, Context.User.SubId(), Context.User.UserName());
-            await base.OnConnectedAsync();
+            try
+            {
+                await _usersService.AddUserAsync(Context.ConnectionId, Context.User.SubId(), Context.User.UserName());
+                await base.OnConnectedAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Add user failed. Error: {e.Message}");
+            }
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            var user = await _usersService.GetUserBySubjectAsync(Context.User.SubId());
-            await _manager.RemoveUserAsync(user.Id);
-            await _usersService.RemoveUserAsync(Context.ConnectionId);
-            await base.OnDisconnectedAsync(exception);
+            try
+            {
+                var subId = Context.User.SubId();
+                await _manager.RemoveUserAsync(subId);
+                await _usersService.RemoveUserAsync(subId);
+                await base.OnDisconnectedAsync(exception);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Delete user failed. Error: {e.Message}");
+            }
         }
     }
 }

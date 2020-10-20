@@ -9,8 +9,9 @@ using SignalRSample.Api.Services;
 
 namespace SignalRSample.Api.Controllers
 {
+    [Authorize]
+    [ApiController]
     [Route("[Controller]")]
-    [Authorize(Roles = "History")]
     public class GamesHistoryController : Controller
     {
         private readonly GamesHistoryService _gamesHistoryService;

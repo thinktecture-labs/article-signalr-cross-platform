@@ -74,24 +74,24 @@ namespace SignalRSample.Api.Services
             }
         }
 
-        public async Task RemoveUserAsync(Guid userId)
+        public async Task RemoveUserAsync(string subId)
         {
-            // await using var tx = await _context.Database.BeginTransactionAsync();
-            var session = await _context.Sessions.FirstOrDefaultAsync(s =>
-                s.UserOne.Id == userId || s.UserTwo.Id == userId);
+            var session = await _context.Sessions
+                .Include(s => s.UserOne)
+                .Include(s => s.UserTwo)
+                .FirstOrDefaultAsync(s =>
+                    s.UserOne.UserSubId == subId || (s.UserTwo != null && s.UserTwo.UserSubId == subId));
             if (session != null)
             {
-                Console.WriteLine($"Remove user from Group. Session: {session.SessionId}, User: {userId}");
+                Console.WriteLine($"Remove user from Group. Session: {session.SessionId}, User: {subId}");
                 await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver", "Lost");
-                var user = session.UserOne.Id == userId ? session.UserOne : session.UserTwo;
+                var user = session.UserOne.UserSubId == subId ? session.UserOne : session.UserTwo;
                 await _hubContext.Clients.Group(session.SessionId).SendAsync("UserDisconnected", user);
                 await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo.ConnectionId, session.SessionId);
                 await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne.ConnectionId, session.SessionId);
                 _context.Sessions.Remove(session);
                 await _context.SaveChangesAsync();
             }
-
-            // await tx.CommitAsync();
         }
 
         public async Task PlayRoundAsync(string clientId, int value)

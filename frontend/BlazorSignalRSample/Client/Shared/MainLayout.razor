@@ -1,9 +1,11 @@
 ﻿@inherits LayoutComponentBase
 
+@inject NavigationManager Navigation
+
 <MatAppBar Style="z-index: 100;" Class="mat" Fixed="true">
     <MatAppBarRow>
         <MatAppBarSection>
-            <div class="sr-tt-logo">
+            <div class="sr-tt-logo" @onclick="@((e)=> Navigation.NavigateTo(""))">
             </div>
         </MatAppBarSection>
         <MatAppBarSection Align="@MatAppBarSectionAlign.End">

@@ -1,0 +1,23 @@
+@page "/userInfo"
+
+<AuthorizeView Roles="History">
+    <Authorized>
+        <p>Hello @context.User.Identity.Name, here's the list of your claims:</p>
+        
+            @foreach (var claim in context.User.Claims)
+            {
+                <div class="mat-elevation-z8 sr-card">
+                    <p>@claim.Type: </p>
+                    <span>@claim.Value</span>
+                </div>
+            }
+        
+    </Authorized>
+    <NotAuthorized>
+        @if(context.User.Identity.IsAuthenticated) {
+            <p>Nur berechtigte Nutzer können diesen Bereich sehen</p>
+        } else {
+            <RedirectToLogin />
+        }
+    </NotAuthorized>
+</AuthorizeView>

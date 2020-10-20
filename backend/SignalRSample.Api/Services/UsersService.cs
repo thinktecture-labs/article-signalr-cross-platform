@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +44,14 @@ namespace SignalRSample.Api.Services
                 throw new ArgumentNullException(nameof(connectionId));
             }
 
-            if (!_context.Users.Any(u => u.UserSubId == subId))
+            if (subId == null)
+            {
+                throw new ArgumentNullException(nameof(subId));
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserSubId == subId);
+
+            if (user == null)
             {
                 await _context.Users.AddAsync(new User
                 {
@@ -53,18 +59,24 @@ namespace SignalRSample.Api.Services
                     UserSubId = subId,
                     Name = String.IsNullOrWhiteSpace(userName) ? connectionId : userName
                 });
-                await _context.SaveChangesAsync();
             }
+            else
+            {
+                user.ConnectionId = connectionId;
+                user.Name = String.IsNullOrWhiteSpace(userName) ? connectionId : userName;
+            }
+
+            await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveUserAsync(string connectionId)
+        public async Task RemoveUserAsync(string subId)
         {
-            if (connectionId == null)
+            if (subId == null)
             {
-                throw new ArgumentNullException(nameof(connectionId));
+                throw new ArgumentNullException(nameof(subId));
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.ConnectionId == connectionId);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserSubId == subId);
             if (user != null)
             {
                 _context.Users.Remove(user);

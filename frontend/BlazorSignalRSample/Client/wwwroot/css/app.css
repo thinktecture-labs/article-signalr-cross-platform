@@ -8,6 +8,23 @@
 
 .body-wrapper {
     height: 100%;
+    text-align: center;
+}
+
+.sr-card {
+    width: 200px;
+    height: 100px;
+    float: left;
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+}
+.sr-card p:first-child {
+    font-weight: 600;
 }
 
 .mdc-top-app-bar {
@@ -117,6 +134,7 @@
     background-repeat: no-repeat;
     width: 66px;
     height: 46px;
+    cursor: pointer;
   }
 
 @media (min-width: 768px) {
