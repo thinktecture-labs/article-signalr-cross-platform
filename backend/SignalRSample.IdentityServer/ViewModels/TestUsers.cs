@@ -30,7 +30,7 @@ namespace SignalRSample.IdentityServer.ViewModels
                     new Claim(JwtClaimTypes.Address,
                         @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }",
                         IdentityServerConstants.ClaimValueTypes.Json),
-                    new Claim(JwtClaimTypes.Role, "History")
+                    new Claim(JwtClaimTypes.Role, "ProUser")
                 }
             },
             new TestUser

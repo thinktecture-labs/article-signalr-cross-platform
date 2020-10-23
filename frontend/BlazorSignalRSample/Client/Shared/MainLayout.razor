@@ -9,12 +9,12 @@
             </div>
         </MatAppBarSection>
         <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-            <AuthorizeView>
+            <AuthorizeView Roles="ProUser">
                 <Authorized>
                     <HistoryButton OnHistoryClicked="@((e) => MenuButtonClicked())"></HistoryButton>
-                    <Login />
                 </Authorized>
             </AuthorizeView>
+            <Login />
         </MatAppBarSection>
     </MatAppBarRow>
 </MatAppBar>

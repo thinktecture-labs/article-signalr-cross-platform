@@ -1,6 +1,6 @@
 @page "/userInfo"
 
-<AuthorizeView Roles="History">
+<AuthorizeView>
     <Authorized>
         <p>Hello @context.User.Identity.Name, here's the list of your claims:</p>
         
