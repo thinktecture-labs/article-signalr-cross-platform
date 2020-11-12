@@ -7,7 +7,7 @@
         <div>
             @(_winner)
         </div>
-        <MatButton Raised="true" @onclick="@(async (e) => await ResetGame())">Reset Game</MatButton>
+        <MatButton Raised="true" @onclick="@(async (e) => await ResetGame())">Neustart</MatButton>
     </div>
 }
 else
@@ -41,7 +41,7 @@ else
                     </div>
                 </div>
             } else if (!_gameOver) {
-                <p>Waiting for a user</p>
+                <p>Warte auf Spieler</p>
             }
         }
     </div>

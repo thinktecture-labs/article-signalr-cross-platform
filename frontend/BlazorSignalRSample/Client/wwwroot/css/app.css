@@ -142,3 +142,15 @@
         justify-content: flex-end;
     }
 }
+
+@media (max-width: 768px) and (min-width: 481px) {
+    .mat-toast-container > div {
+        padding: 0px !important;
+    }
+}
+
+@media (max-width: 480px) and (min-width: 241px) {
+    .mat-toast-container > div {
+        padding: 0px !important;
+    }
+}

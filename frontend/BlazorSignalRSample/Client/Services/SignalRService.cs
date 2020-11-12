@@ -84,7 +84,11 @@ namespace BlazorSignalRSample.Client.Services
                     Console.WriteLine("start signalr connection");
                     await _hubConnection.StartAsync();
                     
-                    _toaster.Add("Erfolgreich am Hub angemeldet!", MatToastType.Success);
+                    _toaster.Add("Erfolgreich angemeldet.", MatToastType.Success, null, null, (options) => {
+                        options.ShowProgressBar = false;
+                        options.ShowCloseButton = false;
+                        options.VisibleStateDuration = 2500;
+                    });
                     await JoinNewSession();
                 }
                 catch(Exception e) 

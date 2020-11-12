@@ -1,8 +1,8 @@
 @page "/userInfo"
 
-<AuthorizeView>
+<AuthorizeView Roles="ProUser">
     <Authorized>
-        <p>Hello @context.User.Identity.Name, here's the list of your claims:</p>
+        <p>Hallo @context.User.Identity.Name</p>
         
             @foreach (var claim in context.User.Claims)
             {
