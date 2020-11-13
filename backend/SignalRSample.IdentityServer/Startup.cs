@@ -3,7 +3,6 @@
 
 
 using IdentityServer4;
-using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +26,17 @@ namespace SignalRSample.IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.AllowAnyOrigin() //TODO add in specific origins?
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
 
             var builder = services.AddIdentityServer(options =>
                 {
@@ -72,6 +82,7 @@ namespace SignalRSample.IdentityServer
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseCors("default");
             app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
