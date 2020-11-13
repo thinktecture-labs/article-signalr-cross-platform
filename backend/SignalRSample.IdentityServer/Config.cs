@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+
+using System.Collections.Generic;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
@@ -17,6 +21,12 @@ namespace SignalRSample.IdentityServer
                 new IdentityResources.Email()
             };
 
+        public static IEnumerable<ApiScope> ApiScopes =>
+            new ApiScope[]
+            {
+                new ApiScope("signalr-api.full_access", "Full access to SignalR API")
+            };
+
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
@@ -30,56 +40,13 @@ namespace SignalRSample.IdentityServer
                         JwtClaimTypes.Subject,
                         JwtClaimTypes.Role
                     },
-                    Scopes =
-                    {
-                        new Scope()
-                        {
-                            Name = "signalr-api.full_access",
-                            DisplayName = "Full access to SignalR API",
-                        }
-                    }
+                    Scopes = {"signalr-api.full_access"}
                 },
             };
 
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
-                new Client
-                {
-                    RequireConsent = false,
-                    ClientId = "crossapp",
-                    ClientName = "Cross Plattform Sample",
-                    AllowedGrantTypes = GrantTypes.Code,
-                    AllowOfflineAccess = true,
-                    ClientSecrets =
-                    {
-                        new Secret("crossapp-secret".Sha256())
-                    },
-                    AllowedScopes =
-                    {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.Email,
-                        "signalr-api.full_access"
-                    },
-                    PostLogoutRedirectUris =
-                    {
-                        "tictactoe://localhost/home",
-                        "http://localhost:4200/home"
-                    },
-                    RedirectUris =
-                    {
-                        "tictactoe://localhost/callback",
-                        "http://localhost:4200/callback"
-                    },
-                    AllowedCorsOrigins =
-                    {
-                        "tictactoe://localhost",
-                        "http://localhost:4200"
-                    },
-                    AllowAccessTokensViaBrowser = true,
-                    AccessTokenLifetime = 3600
-                },
                 new Client
                 {
                     RequireConsent = false,
@@ -116,7 +83,43 @@ namespace SignalRSample.IdentityServer
                     },
                     AllowAccessTokensViaBrowser = true,
                     AccessTokenLifetime = 3600
-                }
+                },
+                new Client
+                {
+                    RequireConsent = false,
+                    ClientId = "crossapp",
+                    ClientName = "Cross Plattform Sample",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowOfflineAccess = true,
+                    ClientSecrets =
+                    {
+                        new Secret("crossapp-secret".Sha256())
+                    },
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "signalr-api.full_access"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+                        "tictactoe://localhost/home",
+                        "http://localhost:4200/home"
+                    },
+                    RedirectUris =
+                    {
+                        "tictactoe://localhost/callback",
+                        "http://localhost:4200/callback"
+                    },
+                    AllowedCorsOrigins =
+                    {
+                        "tictactoe://localhost",
+                        "http://localhost:4200"
+                    },
+                    AllowAccessTokensViaBrowser = true,
+                    AccessTokenLifetime = 3600
+                },
             };
     }
 

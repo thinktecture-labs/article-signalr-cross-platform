@@ -8,8 +8,6 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "start-pwa": "ng build -c production && http-server -o -p 4200 -c-1 dist/signalr-sample",
-    "start-pwa-2": "ng build -c production && http-server -o -p 4201 -c-1 dist/signalr-sample",
     "build-ios": "ng build --prod && npx cap sync ios && npx cap open ios",
     "build-ios-dev": "ng build && npx cap sync ios && npx cap open ios",
     "build-android": "ng build --prod && npx cap sync android && npx cap open android",

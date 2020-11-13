@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+
+using IdentityServer4;
+using IdentityServerHost.Quickstart.UI;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SignalRSample.IdentityServer.Data;
-using SignalRSample.IdentityServer.Models;
-using SignalRSample.IdentityServer.ViewModels;
+using SignalRSample.IdentityServer.Quickstart;
 
 namespace SignalRSample.IdentityServer
 {
@@ -24,41 +26,7 @@ namespace SignalRSample.IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<DatabaseInitializer>();
-
-            services.AddCors(options =>
-            {
-                // this defines a CORS policy called "default"
-                options.AddPolicy("default", policy =>
-                {
-                    policy.AllowAnyOrigin() //TODO add in specific origins?
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-            });
-
             services.AddControllersWithViews();
-
-            // configures IIS out-of-proc settings (see https://github.com/aspnet/AspNetCore/issues/14882)
-            services.Configure<IISOptions>(iis =>
-            {
-                iis.AuthenticationDisplayName = "Windows";
-                iis.AutomaticAuthentication = false;
-            });
-
-            // configures IIS in-proc settings
-            services.Configure<IISServerOptions>(iis =>
-            {
-                iis.AuthenticationDisplayName = "Windows";
-                iis.AutomaticAuthentication = false;
-            });
-
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseInMemoryDatabase("IdentityDbContext"));
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
 
             var builder = services.AddIdentityServer(options =>
                 {
@@ -66,27 +34,32 @@ namespace SignalRSample.IdentityServer
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseSuccessEvents = true;
-                })
-                // this adds the config data from DB (clients, resources, CORS)
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = b =>
-                        b.UseInMemoryDatabase("IdentityDbContext");
-                })
-                // this adds the operational data from DB (codes, tokens, consents)
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = b =>
-                        b.UseInMemoryDatabase("IdentityDbContext");
 
-                    // this enables automatic token cleanup. this is optional.
-                    options.EnableTokenCleanup = true;
+                    // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
+                    options.EmitStaticAudienceClaim = true;
                 })
                 .AddTestUsers(TestUsers.Users);
 
+            // in-memory, code config
+            builder.AddInMemoryIdentityResources(Config.IdentityResources);
+            builder.AddInMemoryApiResources(Config.Apis);
+            builder.AddInMemoryApiScopes(Config.ApiScopes);
+            builder.AddInMemoryClients(Config.Clients);
+
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
-            services.AddAuthentication();
+
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    // register your IdentityServer with Google at https://console.developers.google.com
+                    // enable the Google+ API
+                    // set the redirect URI to https://localhost:5001/signin-google
+                    options.ClientId = "copy client ID from Google here";
+                    options.ClientSecret = "copy client secret from Google here";
+                });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -99,7 +72,6 @@ namespace SignalRSample.IdentityServer
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseCors("default");
             app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
