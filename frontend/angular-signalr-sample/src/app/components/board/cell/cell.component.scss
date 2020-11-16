@@ -21,3 +21,10 @@
     color: #ff584f;
   }
 }
+@media (max-width: 400px) {
+  :host {
+    width: 100px;
+    height: 100px;
+    font-size: 100px;
+  }
+}

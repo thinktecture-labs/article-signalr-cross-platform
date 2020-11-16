@@ -25,3 +25,13 @@
   align-items: center;
   flex-direction: column;
 }
+
+@media (max-width: 400px) {
+  .container {
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+  .overlay {
+    top: 0;
+  }
+}
