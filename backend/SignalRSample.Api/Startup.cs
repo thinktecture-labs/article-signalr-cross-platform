@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using SignalRSample.Api.Database;
-using SignalRSample.Api.Hubs;
 using SignalRSample.Api.Services;
 
 namespace SignalRSample.Api
@@ -33,7 +32,6 @@ namespace SignalRSample.Api
             services.AddDbContext<GamesDbContext>(
                 options => options.UseInMemoryDatabase("TicTacToe"));
             services.AddScoped<GameSessionManager>();
-            services.AddScoped<GamesHistoryService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddControllers();
             services.AddCors(options =>
@@ -59,27 +57,7 @@ namespace SignalRSample.Api
                     {
                         NameClaimType = "name"
                     };
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            var accessToken = context.Request.Query["access_token"];
-
-                            var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) &&
-                                (path.StartsWithSegments("/tictactoe")))
-                            {
-                                context.Token = accessToken;
-                            }
-
-                            return Task.CompletedTask;
-                        },
-                        OnAuthenticationFailed = context =>
-                        {
-                            var te = context.Exception;
-                            return Task.CompletedTask;
-                        },
-                    };
+                    // Add token check
                 })
                 .AddIdentityServerAuthentication("token", options =>
                 {
@@ -125,11 +103,7 @@ namespace SignalRSample.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapHub<GamesHub>("/tictactoe");
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
