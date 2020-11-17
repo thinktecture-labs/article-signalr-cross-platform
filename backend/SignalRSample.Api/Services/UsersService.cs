@@ -49,7 +49,7 @@ namespace SignalRSample.Api.Services
                 throw new ArgumentNullException(nameof(subId));
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserSubId == subId);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.ConnectionId == connectionId);
 
             if (user == null)
             {
