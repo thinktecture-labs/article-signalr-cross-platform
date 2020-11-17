@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public async ngOnInit(): Promise<void> {
-    await this.signalRService.startConnection();
+    // await this.signalRService.startConnection();
     this.gameRunning$ = this.signalRService.gameRunning$;
     this.subscription.add(this.signalRService.gameOver$.subscribe(result => {
       if (result === 'Tie') {
