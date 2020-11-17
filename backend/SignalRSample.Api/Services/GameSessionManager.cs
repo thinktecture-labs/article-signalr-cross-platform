@@ -118,7 +118,8 @@ namespace SignalRSample.Api.Services
                 if (CheckSessionState(session, out var winner))
                 {
                     await _historyService.AddGameAsync(session, winner);
-                    await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver", winner);
+                    await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver",
+                        winner == "Tie" ? "Unentschieden" : $"Der Gewinner ist {winner}");
                     await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne.ConnectionId, session.SessionId);
                     await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo.ConnectionId, session.SessionId);
                     _context.Sessions.Remove(session);
@@ -155,12 +156,12 @@ namespace SignalRSample.Api.Services
                 if (line.Intersect(firstUser).Count() == line.Count())
                 {
                     gameOver = true;
-                    winner = gameSession.UserOne.ConnectionId;
+                    winner = gameSession.UserOne.Name;
                 }
                 else if (line.Intersect(secondUser).Count() == line.Count())
                 {
                     gameOver = true;
-                    winner = gameSession.UserTwo.ConnectionId;
+                    winner = gameSession.UserTwo.Name;
                 }
             }
 

@@ -8,6 +8,5 @@
   </ng-template>
 </div>
 <div class="overlay" *ngIf="gameOver$ |async">
-  <div>{{winner}}</div>
   <button mat-raised-button (click)="joinNewGame()">Neues Spiel</button>
 </div>
