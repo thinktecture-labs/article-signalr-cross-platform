@@ -1,7 +1,6 @@
 namespace SignalRSample.Api.Hubs
-    public class GamesHub
 {
-            {
-
+    public class GamesHub
+    {
     }
 }
