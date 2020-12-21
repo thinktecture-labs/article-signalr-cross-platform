@@ -1,7 +1,11 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using IdentityModel;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.SignalR;
 using SignalRSample.Api.Extensions;
 using SignalRSample.Api.Services;
@@ -41,6 +45,46 @@ namespace SignalRSample.Api.Hubs
         {
             try
             {
+                var feature = Context.Features.Get<IConnectionHeartbeatFeature>();
+                if (feature == null)
+                {
+                    await _usersService.AddUserAsync(Context.ConnectionId, Context.User.SubId(),
+                        Context.User.UserName());
+                    await base.OnConnectedAsync();
+                    return;
+                }
+
+                var context = Context.GetHttpContext();
+                if (context == null)
+                {
+                    throw new InvalidOperationException("The HTTP context cannot be resolved.");
+                }
+
+                var result = await context.AuthenticateAsync(IdentityServerAuthenticationDefaults.AuthenticationScheme);
+                if (result.Ticket == null)
+                {
+                    Context.Abort();
+                    return;
+                }
+
+                var expiresClaim = result.Ticket.Principal.FindFirst(JwtClaimTypes.Expiration);
+                if (!long.TryParse(expiresClaim.Value, out var expiresValue))
+                {
+                    Context.Abort();
+                    return;
+                }
+
+                var expires = DateTimeOffset.FromUnixTimeSeconds(expiresValue);
+
+                feature.OnHeartbeat(state =>
+                {
+                    var (innerExpires, connection) = ((DateTimeOffset, HubCallerContext)) state;
+                    if (innerExpires < DateTimeOffset.UtcNow)
+                    {
+                        connection.Abort();
+                    }
+                }, (expires, Context));
+
                 await _usersService.AddUserAsync(Context.ConnectionId, Context.User.SubId(), Context.User.UserName());
                 await base.OnConnectedAsync();
             }

@@ -104,6 +104,28 @@ namespace SignalRSample.Api
                             return Task.CompletedTask;
                         }
                     };
+                    options.TokenRetriever = req =>
+                    {
+                        if (req.Headers.TryGetValue("Authorization", out var headerValue))
+                        {
+                            var values = headerValue.ToString().Split(",");
+                            if (values.Length == 2)
+                            {
+                                return values[1];
+                            }
+
+                            return string.Empty;
+                        }
+
+                        // Dies wird für SignalR benötigt, da das Token im Querystring gesendet wird
+                        // anstelle von HTTP-Headern.
+                        if (req.Query.TryGetValue("access_token", out var queryValue))
+                        {
+                            return queryValue;
+                        }
+
+                        return string.Empty;
+                    };
                 });
 
             services.AddSignalR();

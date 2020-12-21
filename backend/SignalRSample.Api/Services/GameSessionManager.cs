@@ -87,8 +87,16 @@ namespace SignalRSample.Api.Services
                 await _hubContext.Clients.Group(session.SessionId).SendAsync("GameOver", "Lost");
                 var user = session.UserOne.UserSubId == subId ? session.UserOne : session.UserTwo;
                 await _hubContext.Clients.Group(session.SessionId).SendAsync("UserDisconnected", user);
-                await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo.ConnectionId, session.SessionId);
-                await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne.ConnectionId, session.SessionId);
+                if (!String.IsNullOrWhiteSpace(session.UserOne.ConnectionId))
+                {
+                    await _hubContext.Groups.RemoveFromGroupAsync(session.UserOne.ConnectionId, session.SessionId);
+                }
+
+                if (!String.IsNullOrWhiteSpace(session.UserTwo.ConnectionId))
+                {
+                    await _hubContext.Groups.RemoveFromGroupAsync(session.UserTwo.ConnectionId, session.SessionId);
+                }
+
                 _context.Sessions.Remove(session);
                 await _context.SaveChangesAsync();
             }
