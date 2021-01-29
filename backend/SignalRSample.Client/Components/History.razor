@@ -1,0 +1,22 @@
+@if (_history?.Length > 0) {
+    <MatListGroup>
+        <MatListGroupSubHeader>Zuletzt gespielte Runden:</MatListGroupSubHeader>
+        <MatList SingleSelection="true" TwoLine="true">
+            @foreach (var entry in _history)
+            {
+                <MatListItem>
+                    <MatListItemText>
+                        @if(entry.GameResult == "Loose") {
+                            <MatListItemPrimaryText>Verloren gegen @entry.Opponent</MatListItemPrimaryText>
+                        } else if (entry.GameResult == "Tie"){
+                            <MatListItemPrimaryText>Unentschieden gegen @entry.Opponent</MatListItemPrimaryText>
+                        } else {
+                            <MatListItemPrimaryText>Gewonnen gegen @entry.Opponent</MatListItemPrimaryText>
+                        }
+                        <MatListItemSecondaryText>@entry.SessionDate.ToShortDateString() @entry.SessionDate.ToShortTimeString()</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+            }
+        </MatList>
+    </MatListGroup>
+}

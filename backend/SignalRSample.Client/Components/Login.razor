@@ -1,0 +1,6 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <MatButton Style="color:white;" Dense="true" OnClick="@((e)=> Navigation.NavigateTo("userInfo"))">@context.User.Identity.Name</MatButton>
+        <MatIconButton Icon="exit_to_app" OnClick="@BeginSignOut"></MatIconButton>
+    </Authorized>
+</AuthorizeView>

@@ -1,0 +1,156 @@
+﻿html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.body-wrapper {
+    height: 100%;
+    text-align: center;
+}
+
+.sr-card {
+    width: 200px;
+    height: 100px;
+    float: left;
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+}
+.sr-card p:first-child {
+    font-weight: 600;
+}
+
+.mdc-top-app-bar {
+    background-color: #ff584f !important;
+    padding: 0 8px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 64px);
+    width: 100%;
+    flex-direction: column;
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.clearfix:first-child {
+    border: none;
+}
+
+.clearfix {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+    .clearfix:last-child {
+        border: none;
+    }
+
+.clearfix .cell:first-child, .clearfix .cell:last-child {
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+}
+
+.cell {
+    user-select: none;
+    height: 62px;
+    width: 62px;
+    background-color: white;
+    float: left;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 62px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+    .cell.other {
+        color: #3d6fb4;
+    }
+
+
+.opponent {
+    padding-top: 12px;
+    text-align: center;
+}
+
+.overlay {
+    position: absolute;
+    top: 64px;
+    z-index: 10;
+    -webkit-backdrop-filter: blur(4px) grayscale(30%);
+    backdrop-filter: blur(4px) grayscale(30%);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.connected-state {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+}
+
+    .connected-state i {
+        font-size: 32px;
+        color: white;
+    }
+
+    .connected-state.disabled {
+        opacity: .6;
+    }
+
+.b-layout {
+    height: 100%;
+}
+
+.bg-primary {
+    background-color: #ff584f !important;
+    color: white;
+}
+
+.sr-tt-logo {
+    background-image: url('../images/logo_weiss_vector.svg');
+    background-repeat: no-repeat;
+    width: 66px;
+    height: 46px;
+    cursor: pointer;
+  }
+
+@media (min-width: 768px) {
+    .navbar-expand-md .navbar-collapse {
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 481px) {
+    .mat-toast-container > div {
+        padding: 0px !important;
+    }
+}
+
+@media (max-width: 480px) and (min-width: 241px) {
+    .mat-toast-container > div {
+        padding: 0px !important;
+    }
+}
