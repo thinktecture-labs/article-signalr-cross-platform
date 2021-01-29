@@ -14,6 +14,23 @@
 
 <body>
     <app></app>
+    <script>
+        function reportError(error) {
+            if (DotNet) {
+                DotNet.invokeMethodAsync('MyApp.Client', 'NotifyError', error);
+            }
+        }
+
+        var exLog = console.error;
+        console.error = function (msg) {
+            exLog.apply(console, arguments);
+            reportError(msg);
+        }
+
+        window.addEventListener("unhandledrejection", function (promiseRejectionEvent) {
+            reportError(promiseRejectionEvent.reason.message);
+        });
+    </script>
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
