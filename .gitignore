@@ -9,3 +9,5 @@ android
 ios
 publish
 PublishProfiles
+/backend/SignalRSample.IdentityServer/apsettings.development.json
+/backend/SignalRSample.IdentityServer/appsettings.json
