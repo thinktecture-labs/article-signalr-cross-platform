@@ -1,3 +1,4 @@
+using System;
 using MatBlazor;
 using Microsoft.JSInterop;
 
@@ -14,7 +15,7 @@ namespace SignalRSample.Client
         [JSInvokable("NotifyError")]
         public static void NotifyError(string error)
         {
-            // TODO: Show Dialog.
+            Console.WriteLine(error);
         }
     }
 }

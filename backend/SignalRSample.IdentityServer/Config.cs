@@ -22,13 +22,14 @@ namespace SignalRSample.IdentityServer
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
-            new ApiScope[]
+            new[]
             {
-                new ApiScope("signalr-api.full_access", "Full access to SignalR API")
+                new ApiScope("signalr-api.full_access", "Full access to SignalR API"),
+                new ApiScope("messenger-api.full_access", "Full access to Messenger API")
             };
 
         public static IEnumerable<ApiResource> Apis =>
-            new ApiResource[]
+            new[]
             {
                 new ApiResource
                 {
@@ -42,10 +43,22 @@ namespace SignalRSample.IdentityServer
                     },
                     Scopes = {"signalr-api.full_access"}
                 },
+                new ApiResource
+                {
+                    Name = "messenger-api",
+                    DisplayName = "Messenger API",
+                    UserClaims =
+                    {
+                        JwtClaimTypes.Name,
+                        JwtClaimTypes.Subject,
+                        JwtClaimTypes.Role
+                    },
+                    Scopes = {"messenger-api.full_access"}
+                },
             };
 
         public static IEnumerable<Client> Clients =>
-            new Client[]
+            new[]
             {
                 new Client
                 {
@@ -82,7 +95,7 @@ namespace SignalRSample.IdentityServer
                         "http://localhost:52310"
                     },
                     AllowAccessTokensViaBrowser = true,
-                    AccessTokenLifetime = 3600
+                    AccessTokenLifetime = 31556952
                 },
                 new Client
                 {
@@ -118,7 +131,49 @@ namespace SignalRSample.IdentityServer
                         "http://localhost:4200"
                     },
                     AllowAccessTokensViaBrowser = true,
-                    AccessTokenLifetime = 3600
+                    AccessTokenLifetime = 31556952
+                },
+                new Client
+                {
+                    RequireConsent = false,
+                    ClientId = "music-messenger-app",
+                    ClientName = "Music Messenger PWA",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowOfflineAccess = true,
+                    ClientSecrets =
+                    {
+                        new Secret("music-messenger-app-secret".Sha256())
+                    },
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "messenger-api.full_access"
+                    },
+                    PostLogoutRedirectUris =
+                    {
+                        "http://localhost:4200/#/login",
+                        "http://127.0.0.1:2020/#/login",
+                        "http://192.168.0.106:2020/#/login",
+                        "https://music-messenger.azurewebsites.net/#/login"
+                    },
+                    RedirectUris =
+                    {
+                        "http://localhost:4200/#/callback",
+                        "http://127.0.0.1:2020/#/callback",
+                        "http://192.168.0.106:2020/#/callback",
+                        "https://music-messenger.azurewebsites.net/#/callback"
+                    },
+                    AllowedCorsOrigins =
+                    {
+                        "http://localhost:4200",
+                        "http://127.0.0.1:2020",
+                        "http://192.168.0.106:2020",
+                        "https://music-messenger.azurewebsites.net"
+                    },
+                    AllowAccessTokensViaBrowser = true,
+                    AccessTokenLifetime = 31556952
                 },
             };
     }
@@ -128,11 +183,11 @@ namespace SignalRSample.IdentityServer
     {
         public ProfileWithRoleIdentityResource()
         {
-            this.UserClaims.Add(JwtClaimTypes.Name);
-            this.UserClaims.Add(JwtClaimTypes.Subject);
-            this.UserClaims.Add(JwtClaimTypes.WebSite);
-            this.UserClaims.Add(JwtClaimTypes.Email);
-            this.UserClaims.Add(JwtClaimTypes.Role);
+            UserClaims.Add(JwtClaimTypes.Name);
+            UserClaims.Add(JwtClaimTypes.Subject);
+            UserClaims.Add(JwtClaimTypes.WebSite);
+            UserClaims.Add(JwtClaimTypes.Email);
+            UserClaims.Add(JwtClaimTypes.Role);
         }
     }
 }

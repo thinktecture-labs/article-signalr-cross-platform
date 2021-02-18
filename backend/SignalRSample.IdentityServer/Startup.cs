@@ -2,12 +2,19 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System.Reflection;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SignalRSample.IdentityServer.Quickstart;
+using SignalRSample.IdentityServer.Data;
+using SignalRSample.IdentityServer.Models;
+using SignalRSample.IdentityServer.Services;
+using SignalRSample.IdentityServer.Utils;
 
 namespace SignalRSample.IdentityServer
 {
@@ -24,8 +31,9 @@ namespace SignalRSample.IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddControllersWithViews();
-            
+
             services.AddCors(options =>
             {
                 // this defines a CORS policy called "default"
@@ -37,6 +45,15 @@ namespace SignalRSample.IdentityServer
                 });
             });
 
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddTransient<IProfileService, IdentityWithAdditionalClaimsProfileService>();
+
             var builder = services.AddIdentityServer(options =>
                 {
                     options.Events.RaiseErrorEvents = true;
@@ -47,19 +64,22 @@ namespace SignalRSample.IdentityServer
                     // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                     options.EmitStaticAudienceClaim = true;
                 })
-                .AddTestUsers(TestUsers.Users);
-
-            // in-memory, code config
-            builder.AddInMemoryIdentityResources(Config.IdentityResources);
-            builder.AddInMemoryApiResources(Config.Apis);
-            builder.AddInMemoryApiScopes(Config.ApiScopes);
-            builder.AddInMemoryClients(Config.Clients);
+                .AddConfigurationStore(option =>
+                    option.ConfigureDbContext = builder => builder.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection"), options =>
+                            options.MigrationsAssembly(migrationsAssembly)))
+                .AddOperationalStore(option =>
+                    option.ConfigureDbContext = builder => builder.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection"), options =>
+                            options.MigrationsAssembly(migrationsAssembly)))
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddProfileService<IdentityWithAdditionalClaimsProfileService>();
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ApplicationDbContext context)
         {
             if (Environment.IsDevelopment())
             {
@@ -67,7 +87,7 @@ namespace SignalRSample.IdentityServer
             }
 
             app.UseStaticFiles();
-
+            DatabaseInitializer.Initialize(app, context);
             app.UseRouting();
             app.UseCors("default");
             app.UseIdentityServer();

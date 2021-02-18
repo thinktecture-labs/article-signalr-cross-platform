@@ -1,4 +1,4 @@
-@model LoginViewModel
+@model SignalRSample.IdentityServer.ViewModel.Account.LoginViewModel
 
 @*<div class="login-page">
     <div class="lead">
@@ -58,7 +58,8 @@
         }
     </div>
 </div>*@
-<form asp-route="Login">
+@*<form asp-route="Login">*@
+<form asp-controller="Account" asp-action="Login" asp-route-returnurl="@Model.ReturnUrl" method="post">
     <div class="login-box">
         <h1>Anmeldung</h1>
         <input type="hidden" asp-for="ReturnUrl"/>
@@ -70,6 +71,7 @@
         </div>
         <div class="form-group">
             <button class="btn" name="button" value="login">Anmelden</button>
+            <button class="btn" name="button" value="register" asp-action="Register" asp-route-returnurl="@Model.ReturnUrl">Register</button>
         </div>
     </div>
 </form>
