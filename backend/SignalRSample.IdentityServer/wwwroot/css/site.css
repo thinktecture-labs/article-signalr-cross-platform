@@ -134,3 +134,58 @@ body {
     margin: 12px 0;
     outline: none;
 }
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.form-input-field {
+    position: relative;
+}
+.field-validation-error {
+    color: #ff0000;
+    font-size: 10px;
+    position: absolute;
+    bottom: -16px;
+    right: 5px;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+.input-validation-error {
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+.validation-summary-errors {
+    font-weight: bold;
+    color: #ff0000;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+/* Styles for editor and display helpers
+----------------------------------------------------------*/
+.display-label,
+.editor-label {
+    margin: 1em 0 0 0;
+}
+
+.display-field,
+.editor-field {
+    margin: 0.5em 0 0 0;
+}
+
+.text-box {
+    width: 30em;
+}
+
+.text-box.multi-line {
+    height: 6.5em;
+}
+
+.tri-state {
+    width: 6em;
+}
