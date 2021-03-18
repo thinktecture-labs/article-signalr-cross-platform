@@ -44,7 +44,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (!this.gameOver && !this.waitForOther) {
       if (this.cells[idx] === null) {
         this.cells[idx] = this.turn;
-        await this.signalRService.sendPlayRound(idx);
+        // send play round from signalRService
         this.waitForOther = true;
       }
     }

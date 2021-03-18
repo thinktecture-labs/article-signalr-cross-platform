@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public async joinNewGame() {
-    await this.signalRService.joinNewSession();
+    // add method call to join new session
   }
 
   public ngOnDestroy(): void {
