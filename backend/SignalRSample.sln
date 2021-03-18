@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRSample.Api", "Signal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRSample.IdentityServer", "SignalRSample.IdentityServer\SignalRSample.IdentityServer.csproj", "{C941C13E-6E61-422E-800A-CD8804B7A727}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRSample.Client", "SignalRSample.Client\SignalRSample.Client.csproj", "{D27F5AD5-A05D-47DF-8782-E8FDB7309A3A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,9 +18,5 @@ Global
 		{C941C13E-6E61-422E-800A-CD8804B7A727}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C941C13E-6E61-422E-800A-CD8804B7A727}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C941C13E-6E61-422E-800A-CD8804B7A727}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D27F5AD5-A05D-47DF-8782-E8FDB7309A3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D27F5AD5-A05D-47DF-8782-E8FDB7309A3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D27F5AD5-A05D-47DF-8782-E8FDB7309A3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D27F5AD5-A05D-47DF-8782-E8FDB7309A3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

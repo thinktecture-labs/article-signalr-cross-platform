@@ -33,7 +33,6 @@ namespace SignalRSample.Api
             services.AddDbContext<GamesDbContext>(
                 options => options.UseInMemoryDatabase("TicTacToe"));
             services.AddScoped<GameSessionManager>();
-            services.AddScoped<GamesHistoryService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddControllers();
             services.AddCors(options =>
@@ -59,27 +58,8 @@ namespace SignalRSample.Api
                     {
                         NameClaimType = "name"
                     };
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            var accessToken = context.Request.Query["access_token"];
-
-                            var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) &&
-                                (path.StartsWithSegments("/tictactoe")))
-                            {
-                                context.Token = accessToken;
-                            }
-
-                            return Task.CompletedTask;
-                        },
-                        OnAuthenticationFailed = context =>
-                        {
-                            var te = context.Exception;
-                            return Task.CompletedTask;
-                        },
-                    };
+                    // Add Token check
+                    
                 })
                 .AddIdentityServerAuthentication("token", options =>
                 {
@@ -104,31 +84,9 @@ namespace SignalRSample.Api
                             return Task.CompletedTask;
                         }
                     };
-                    options.TokenRetriever = req =>
-                    {
-                        if (req.Headers.TryGetValue("Authorization", out var headerValue))
-                        {
-                            var values = headerValue.ToString().Split(",");
-                            if (values.Length == 2)
-                            {
-                                return values[1];
-                            }
-
-                            return string.Empty;
-                        }
-
-                        // Dies wird für SignalR benötigt, da das Token im Querystring gesendet wird
-                        // anstelle von HTTP-Headern.
-                        if (req.Query.TryGetValue("access_token", out var queryValue))
-                        {
-                            return queryValue;
-                        }
-
-                        return string.Empty;
-                    };
                 });
 
-            services.AddSignalR();
+            // Add SignalR
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -150,7 +108,7 @@ namespace SignalRSample.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<GamesHub>("/tictactoe");
+                // Add Hubs
             });
         }
     }
