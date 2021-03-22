@@ -32,7 +32,7 @@ namespace SignalRSample.Api
         {
             services.AddDbContext<GamesDbContext>(
                 options => options.UseInMemoryDatabase("TicTacToe"));
-            services.AddScoped<GameSessionManager>();
+            services.AddSingleton<GameSessionManager>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddControllers();
             services.AddCors(options =>

@@ -13,12 +13,8 @@ namespace SignalRSample.Api.Services
     public class GameSessionManager
     {
         // Add winning-options
-
-        private readonly GamesDbContext _context;
-
-        public GameSessionManager(GamesDbContext context)
+        public GameSessionManager()
         {
-            _context = context;
         }
     }
 }
