@@ -19,6 +19,11 @@ namespace SignalRSample.Api.Models
             get { return _moves ??= new List<GameSessionMove>(); }
             set => _moves = value;
         }
+
+        public GameSession()
+        {
+            Id = Guid.NewGuid();
+        }
     }
 
     public class GameSessionMove
